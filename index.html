@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ran Tavory</title>
+    <meta name="description"
+        content="Principal Scientist at TII, focusing on LLMs and ML research. Ex-Google, Ex-Microsoft, Ex-AppsFlyer.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --color-bg: #0a0a0f;
-            --color-surface: #12121a;
-            --color-primary: #e8e4dd;
-            --color-accent: #c9a55c;
-            --color-muted: #6b6b7b;
-            --font-display: 'Playfair Display', Georgia, serif;
-            --font-body: 'Source Sans 3', system-ui, sans-serif;
+            --color-bg: #faf9f7;
+            --color-surface: #ffffff;
+            --color-text: #1a1a1a;
+            --color-text-secondary: #555;
+            --color-accent: #b8860b;
+            --color-accent-light: #daa520;
+            --color-muted: #888;
+            --color-border: #e5e5e5;
+            --color-year: #6b5b3d;
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         * {
@@ -25,188 +35,635 @@
         }
 
         html {
-            font-size: 18px;
+            font-size: 17px;
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: var(--font-body);
+            font-family: var(--font-sans);
             background-color: var(--color-bg);
-            color: var(--color-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Ambient background effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(ellipse at 20% 30%, rgba(201, 165, 92, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(100, 120, 180, 0.06) 0%, transparent 50%);
-            animation: drift 20s ease-in-out infinite;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(-2%, 2%) rotate(1deg); }
+            color: var(--color-text);
+            line-height: 1.7;
+            padding: 0;
         }
 
         .container {
-            max-width: 680px;
-            width: 100%;
-            animation: fadeUp 1s ease-out;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 2rem 6rem;
         }
 
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Header */
         header {
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
         }
 
         h1 {
-            font-family: var(--font-display);
-            font-size: 3.5rem;
-            font-weight: 400;
+            font-family: var(--font-serif);
+            font-size: 2.8rem;
+            font-weight: 600;
             letter-spacing: -0.02em;
-            line-height: 1.1;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--color-text);
         }
 
         .tagline {
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: var(--color-muted);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-
-        .divider {
-            width: 60px;
-            height: 1px;
-            background: linear-gradient(90deg, var(--color-accent), transparent);
-            margin: 2.5rem 0;
-        }
-
-        .content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--color-primary);
-            opacity: 0.85;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--color-text-secondary);
             margin-bottom: 1.5rem;
         }
 
-        .links {
-            display: flex;
-            gap: 2rem;
-            margin-top: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .links a {
-            color: var(--color-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            position: relative;
-            padding-bottom: 4px;
-            transition: color 0.3s ease;
-        }
-
-        .links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--color-accent);
-            transition: width 0.3s ease;
-        }
-
-        .links a:hover {
+        .tagline em {
+            font-family: var(--font-serif);
+            font-style: italic;
             color: var(--color-accent);
         }
 
-        .links a:hover::after {
-            width: 100%;
+        .header-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            font-size: 0.9rem;
         }
 
-        footer {
-            position: fixed;
-            bottom: 2rem;
-            font-size: 0.75rem;
+        .header-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
             color: var(--color-muted);
-            opacity: 0.5;
-            letter-spacing: 0.1em;
+            text-decoration: none;
+            transition: color 0.2s;
         }
 
+        .header-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .header-links a:hover svg {
+            transform: translateY(-1px);
+        }
+
+        .header-links svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.2s ease;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-muted);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Bio */
+        .bio {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .bio p {
+            margin-bottom: 1rem;
+        }
+
+        /* Timeline entries */
+        .timeline-entry {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .timeline-entry:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .year {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--color-year);
+            padding-top: 0.2rem;
+        }
+
+        .entry-content h3 {
+            color: var(--color-text);
+        }
+
+        .entry-content .role {
+            font-size: 0.95rem;
+            color: var(--color-accent);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-content p {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Links in content */
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--color-accent-light);
+            text-decoration: underline;
+        }
+
+        /* Projects list */
+        .project-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .project-item h4 {
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .project-item h4 a {
+            color: var(--color-text);
+        }
+
+        .project-item h4 a:hover {
+            color: var(--color-accent);
+        }
+
+        .project-item p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Talks list */
+        .talks-list {
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        .talks-list a {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+        }
+
+        .talks-list a:hover {
+            color: var(--color-accent);
+        }
+
+        .talks-list .talk-year {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            margin-right: 0.5rem;
+        }
+
+        /* Education */
+        .education-entry {
+            margin-bottom: 1rem;
+        }
+
+        .education-entry h4 {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.1rem;
+        }
+
+        .education-entry .degree {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        .education-entry .honors {
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            font-size: 0.8rem;
+            color: var(--color-muted);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
         @media (max-width: 600px) {
             html {
                 font-size: 16px;
             }
 
-            h1 {
-                font-size: 2.5rem;
+            .container {
+                padding: 2rem 1.25rem 4rem;
             }
 
-            .links {
-                gap: 1.5rem;
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .timeline-entry {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+
+            .year {
+                font-size: 0.8rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .header-links {
+                gap: 1rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
             <h1>Ran Tavory</h1>
-            <p class="tagline">Welcome</p>
+            <p class="tagline">Principal Scientist building <em>Large Language Models Applications</em> · Ex-Google,
+                Ex-AppsFlyer, Ex-Microsoft, former CTO, Community Builder</p>
+            <p class="tagline" style="font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 1rem;">📍 Haifa District,
+                Israel</p>
+            <nav class="header-links">
+                <a href="https://github.com/rantav">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                    GitHub
+                </a>
+                <a href="https://linkedin.com/in/rantav">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                    LinkedIn
+                </a>
+                <a href="https://twitter.com/rantav">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                    Twitter
+                </a>
+                <a href="https://www.reversim.com">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.5 16.5c-.828 0-1.5-.672-1.5-1.5V9l-6 4.5V9c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5v4.5l6-4.5v6c0 .828-.672 1.5-1.5 1.5z" />
+                    </svg>
+                    Reversim
+                </a>
+                <!-- <a href="mailto:rantav@gmail.com">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    Email
+                </a> -->
+            </nav>
         </header>
 
-        <div class="divider"></div>
-
-        <div class="content">
+        <section class="bio">
             <p>
-                Hello! This is my corner of the internet. A simple space to share thoughts, 
-                projects, and connect with the world.
+                I'm a <strong>Principal Scientist II</strong> at <a href="https://www.tii.ae">TII</a> (Technology
+                Innovation Institute), where I develop Large Language Models <strong>Agentic AI</strong>, RAG
+                systems,
+                and LLMOps.
+                With 20+ years in software engineering and machine learning, including an ML-focused MSc, I
+                previously headed Data Science at <a href="https://www.appsflyer.com">AppsFlyer</a>, a
+                multi-billion-dollar
+                mobile attribution platform.
             </p>
-        </div>
+            <p>
+                My work spans the full stack: from building responsive web interfaces to architecting scalable
+                infrastructure, processing data at high scale and managing large infrastructures and highly autonomous teams.
+                I care deeply about automation, continuous deployment, and software craftsmanship. I'm also an active
+                open-source contributor.
+            </p>
+            <p>
+                Beyond my day job, I co-host <a href="https://www.reversim.com">Reversim</a> with Ori Lahav—a Hebrew
+                podcast for software developers—and organize <a href="https://summit.reversim.com">Reversim Summit</a>,
+                Israel's largest developer conference, drawing 2,000+ attendees annually.
+            </p>
+        </section>
 
-        <nav class="links">
-            <a href="https://github.com/rantav">GitHub</a>
-            <a href="https://twitter.com/rantav">Twitter</a>
-            <a href="https://linkedin.com/in/rantav">LinkedIn</a>
-        </nav>
+        <section>
+            <h2>Experience</h2>
+
+            <div class="timeline-entry">
+                <span class="year">2024 –</span>
+                <div class="entry-content">
+                    <h3>Technology Innovation Institute</h3>
+                    <p class="role">Principal Scientist II</p>
+                    <p>
+                        Applied research and development of LLMs, RAGs and Agents. Leading MLEng and architecture across
+                        the
+                        organization. Building next-generation language models benchmarks and advancing LLMOps
+                        practices.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2018 – 2023</span>
+                <div class="entry-content">
+                    <h3>AppsFlyer</h3>
+                    <p class="role">Head of Data Science, Golang Community Lead, Architecture Lead</p>
+                    <p>
+                        Led the data science group at the world's largest mobile attribution platform. Managed the Haifa
+                        office, growing it from 4 to 30 developers. Headed the Golang community, expanding it to 100+
+                        developers.
+                        Led cross-org infrastructure efforts including multi-region architecture, Kubernetes deployment
+                        automation,
+                        code review practices, and hiring processes. Created open-source
+                        <a href="https://github.com/rantav/go-archetype">Go libraries</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2015 – 2018</span>
+                <div class="entry-content">
+                    <h3>Yodas <span style="font-weight: 400; font-size: 0.85em; color: var(--color-muted);">(Acquired by
+                            AppsFlyer)</span></h3>
+                    <p class="role">Co-Founder & CTO</p>
+                    <p>
+                        Co-founded and led engineering at Yodas, a platform where developers, PMs, and designers share
+                        product achievements. Responsible for product design, implementation, and managing a team of 7
+                        engineers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2013 – 2014</span>
+                <div class="entry-content">
+                    <h3>Totango & Cloudify</h3>
+                    <p class="role">Freelance Developer</p>
+                    <p>
+                        Built mission-critical infrastructure: deployment automation, database tooling (Cassandra,
+                        MySQL),
+                        API gateway, and AWS architecture for Totango. Designed public API layer and monitoring tools
+                        for Cloudify.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2012 – 2013</span>
+                <div class="entry-content">
+                    <h3>Social Studios TV</h3>
+                    <p class="role">CTO</p>
+                    <p>
+                        Oversaw all engineering at a company connecting social networks to television.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2011 – 2012</span>
+                <div class="entry-content">
+                    <h3>invi Labs <span
+                            style="font-weight: 400; font-size: 0.85em; color: var(--color-muted);">(Acquired by Google,
+                            2018)</span></h3>
+                    <p class="role">Co-Founder & CTO</p>
+                    <p>
+                        Co-founded invi, a scheduling and texting service designed to reduce friction in setting up
+                        social
+                        meetings. Responsible for all technical aspects including server-side development and iOS app.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2009 – 2011</span>
+                <div class="entry-content">
+                    <h3>Outbrain</h3>
+                    <p class="role">Software Architect & Backend Team Lead</p>
+                    <p>
+                        One of the first developers at Outbrain. Built large-scale web applications syndicated across
+                        tens of thousands of sites including top US news sites. Cassandra expert; built highly available
+                        multi-datacenter infrastructure. Led one of the first Continuous Deployment systems in the
+                        world.
+                        Created <a href="https://github.com/hector-client/hector">Hector</a>, the de-facto Java client
+                        for Cassandra.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2006 – 2009</span>
+                <div class="entry-content">
+                    <h3>Google</h3>
+                    <p class="role">Senior Software Engineer</p>
+                    <p>
+                        Built products including an ads-search engine and <strong>YouTube's Interactive Videos</strong>.
+                        Interactive Videos started as my 20% project (with co-founder Michael Fink), graduated to a
+                        full-time product used by hundreds of millions. Tech lead of a team of 9 spanning Israel and
+                        California.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2004 – 2006</span>
+                <div class="entry-content">
+                    <h3>RawSugar</h3>
+                    <p class="role">Senior Software Engineer</p>
+                    <p>
+                        Web UI development, REST API design, and AJAX search components for a tagged content navigation
+                        and search service.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2001 – 2005</span>
+                <div class="entry-content">
+                    <h3>Microsoft</h3>
+                    <p class="role">Software Engineer</p>
+                    <p>
+                        Developed security and penetration tools for Microsoft's firewall product, including penetration
+                        tests and stress analysis tools. Haifa, Israel.
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-entry">
+                <span class="year">2000 – 2001</span>
+                <div class="entry-content">
+                    <h3>Just Ask</h3>
+                    <p class="role">Software Engineer</p>
+                    <p>
+                        Designed and implemented e-learning web applications (part-time during studies).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Education</h2>
+
+            <div class="education-entry">
+                <h4>Georgia Institute of Technology</h4>
+                <p class="degree">Master of Science in Computer Science · 2021 – 2023</p>
+                <p class="honors">GPA 4.0/4.0</p>
+                <p class="honors">Machine Learning Specialization</p>
+            </div>
+
+            <div class="education-entry">
+                <h4>Technion – Israel Institute of Technology</h4>
+                <p class="degree">BSc in Computer Software Engineering · 1998 – 2002</p>
+                <p class="honors">Summa cum laude, Dean's list</p>
+                <p class="honors">Teaching Assistant, Advanced Topics in CS (2008) – JavaScript & Web Applications</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Community & Conferences</h2>
+
+            <div class="project-item">
+                <h4><a href="https://www.reversim.com">Reversim Podcast</a></h4>
+                <p>Co-host and co-founder since November 2009, alongside <strong>Ori Lahav</strong>. A popular Hebrew
+                    podcast for software developers, interviewing industry leaders and discussing technology trends.
+                    16+ years running.</p>
+            </div>
+
+            <div class="project-item">
+                <h4><a href="https://summit.reversim.com">Reversim Summit</a></h4>
+                <p>Lead organizer since 2012. Israel's premier developer conference, grown from 350 to 2,000+ developers
+                    annually. Two days of software development and data science sessions. 13+ years running.</p>
+            </div>
+
+            <div class="project-item">
+                <h4><a href="http://devopsdays.org/events/2013-telaviv/">DevOpsDays Tel Aviv</a></h4>
+                <p>Co-organizer of the first Israeli DevOpsDays event (2013). Part of the international DevOpsDays
+                    series,
+                    200+ attendees from Israel, Europe and US.</p>
+            </div>
+
+            <div class="project-item">
+                <h4>DevOps Con Israel</h4>
+                <p>Co-organized the first DevOps conference in Israel (January 2013). Focused on DevOps, NoOps,
+                    continuous delivery, integration tools, and case studies.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Pro Bono & Volunteering</h2>
+
+            <div class="project-item">
+                <h4>XPOZ</h4>
+                <p>Pro bono advisor on Software and ML (October 2023 – March 2024).</p>
+            </div>
+
+            <div class="project-item">
+                <h4>DemocraTech – מטה ההייטק</h4>
+                <p>Pro bono contributor for Israel's democracy initiatives (June 2023 – January 2024).</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Open Source</h2>
+
+            <div class="project-item">
+                <h4><a href="https://github.com/hector-client/hector">Hector</a></h4>
+                <p>The most popular Java client for Apache Cassandra. Became the de-facto standard and was officially
+                    supported by Cassandra provider DataStax.</p>
+            </div>
+
+            <div class="project-item">
+                <h4>Go Libraries</h4>
+                <p>
+                    <a href="https://github.com/rantav/go-archetype">go-archetype</a> ·
+                    <a href="https://github.com/rantav/go-grpc-channelz">go-grpc-channelz</a> ·
+                    <a href="https://github.com/AppsFlyer/kafka-mirror-tester">kafka-mirror-tester</a>
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Patents</h2>
+            <div class="project-item">
+                <h4><a href="http://www.google.com/patents?id=2rTKAAAAEBAJ">A Web-Based System for Collaborative
+                        Generation of Interactive Videos</a></h4>
+                <p>US Patent 12/388,365 · Filed December 3, 2009 · Co-inventor: Michael Fink<br>
+                    Computer-implemented method for annotating digital video, enabling YouTube's interactive video
+                    annotations feature.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Languages</h2>
+            <div class="project-item" style="margin-bottom: 0;">
+                <p><strong>Hebrew</strong> – Native · <strong>English</strong> – Professional working proficiency</p>
+            </div>
+        </section>
+
+        <!-- <section>
+            <h2>Testimonials</h2>
+            <div class="project-item">
+                <blockquote
+                    style="border-left: 2px solid var(--color-accent); padding-left: 1rem; margin: 0; font-style: italic; color: var(--color-text-secondary);">
+                    "Ran is an amazing engineer. Friendly and liked by everyone at Google at the same time as being
+                    super
+                    strong technically, a great innovator, and leader."
+                </blockquote>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem;">— <strong>Isaac Elias</strong>, Google</p>
+            </div>
+            <div class="project-item">
+                <blockquote
+                    style="border-left: 2px solid var(--color-accent); padding-left: 1rem; margin: 0; font-style: italic; color: var(--color-text-secondary);">
+                    "Ran is an excellent engineer, and one of these guys who can tie all the knots together, end to end:
+                    from the very little tech details, through the infrastructure details, all the way to the business
+                    level.
+                    Ran is a perfect addition to any R&D team, and at any level."
+                </blockquote>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem;">— <strong>Eran Harel</strong>, Outbrain</p>
+            </div>
+        </section> -->
+
+        <footer>
+            <p>0 frameworks were used to make this website. Pure HTML and CSS.</p>
+            <p>© 2025 Ran Tavory · <a href="https://linkedin.com/in/rantav">LinkedIn</a> · <a
+                    href="https://github.com/rantav">GitHub</a></p>
+        </footer>
     </div>
-
-    <footer>
-        &copy; 2025
-    </footer>
 </body>
-</html>
 
+</html>
