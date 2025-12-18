@@ -269,13 +269,28 @@
         }
 
         /* Presentations Grid */
+        .year-header {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .year-header:first-of-type {
+            margin-top: 0;
+        }
+
         .presentations-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
         }
 
         .presentation-card {
+            display: block;
             background: var(--color-surface);
             border: 1px solid var(--color-border);
             border-radius: 8px;
@@ -283,6 +298,9 @@
             transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
         }
 
         .presentation-card::before {
@@ -314,14 +332,10 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             line-height: 1.4;
-        }
-
-        .presentation-card h4 a {
             color: var(--color-text);
-            text-decoration: none;
         }
 
-        .presentation-card h4 a:hover {
+        .presentation-card:hover h4 {
             color: var(--color-accent);
         }
 
@@ -736,9 +750,11 @@
 
         <section>
             <h2>Presentations & Talks</h2>
+
+            <h3 class="year-header">2025</h3>
             <div class="presentations-grid">
-                <div class="presentation-card">
-                    <h4><a href="presentations/fullstack.pdf" target="_blank">Full Stack Development</a></h4>
+                <a href="presentations/2025 DeepSeek & GRPO.pdf" target="_blank" class="presentation-card">
+                    <h4>DeepSeek & GRPO</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -746,12 +762,11 @@
                         </svg>
                         PDF
                     </div>
-                    <p>End-to-end web development—from frontend interfaces to backend architecture.</p>
-                </div>
-
-                <div class="presentation-card">
-                    <h4><a href="presentations/nosql and cassandra - IBM.pdf" target="_blank">NoSQL and Cassandra</a>
-                    </h4>
+                    <p>Deep dive into DeepSeek's architecture and Group Relative Policy Optimization for LLM training.
+                    </p>
+                </a>
+                <a href="presentations/2025 You're Fired.pdf" target="_blank" class="presentation-card">
+                    <h4>You're Fired</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -759,13 +774,14 @@
                         </svg>
                         PDF
                     </div>
-                    <p>Deep dive into NoSQL databases with focus on Apache Cassandra—architecture, data modeling, and
-                        use cases.</p>
-                </div>
+                    <p>The impact of AI on jobs and the future of work.</p>
+                </a>
+            </div>
 
-                <div class="presentation-card">
-                    <h4><a href="presentations/devops-jungle-of-tools.pdf" target="_blank">DevOps Jungle of Tools</a>
-                    </h4>
+            <h3 class="year-header">2024</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2024 GenAI for kids.pdf" target="_blank" class="presentation-card">
+                    <h4>GenAI for Kids</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -773,12 +789,97 @@
                         </svg>
                         PDF
                     </div>
-                    <p>Navigating the DevOps ecosystem—tools, practices, and strategies for modern infrastructure.</p>
-                </div>
+                    <p>Introduction to Generative AI concepts for young learners.</p>
+                </a>
+            </div>
 
-                <div class="presentation-card">
-                    <h4><a href="presentations/Lamda stories from the Trenches.pdf" target="_blank">Lambda: Stories from
-                            the Trenches</a></h4>
+            <h3 class="year-header">2023</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2023 Introduction to Data Science, DataCoach @ Technion.pdf" target="_blank"
+                    class="presentation-card">
+                    <h4>Introduction to Data Science</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>DataCoach @ Technion—foundations of data science and machine learning.</p>
+                </a>
+            </div>
+
+            <h3 class="year-header">2020</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2020 Code Review - 3base.pdf" target="_blank" class="presentation-card">
+                    <h4>Code Review</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Best practices for effective code reviews—methodology, tools, and team culture.</p>
+                </a>
+                <a href="presentations/2020 go-archetype.pdf" target="_blank" class="presentation-card">
+                    <h4>go-archetype</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Project scaffolding tool for Go—generate new projects from templates.</p>
+                </a>
+                <a href="presentations/2020 go-grpc-channelz gopherconil 2020.pdf" target="_blank"
+                    class="presentation-card">
+                    <h4>go-grpc-channelz</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>GopherCon IL 2020—debugging gRPC services with Channelz.</p>
+                </a>
+            </div>
+
+            <h3 class="year-header">2019</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2019 10 years of Reversim and Summit RS19 _ Ori and Ran.pdf" target="_blank"
+                    class="presentation-card">
+                    <h4>10 Years of Reversim</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Reversim Summit 2019—celebrating a decade of the podcast and conference.</p>
+                </a>
+                <a href="presentations/2019 Infrastructure testing using Kubernetes - KafkaTLV meetup Dec 2019.cleaned.pdf"
+                    target="_blank" class="presentation-card">
+                    <h4>Infrastructure Testing with Kubernetes</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>KafkaTLV Meetup—testing infrastructure at scale using Kubernetes.</p>
+                </a>
+            </div>
+
+            <h3 class="year-header">2018</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2018 Lamda stories from the Trenches.pdf" target="_blank"
+                    class="presentation-card">
+                    <h4>Lambda: Stories from the Trenches</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -787,10 +888,13 @@
                         PDF
                     </div>
                     <p>Real-world experiences with AWS Lambda—lessons learned and best practices for serverless.</p>
-                </div>
+                </a>
+            </div>
 
-                <div class="presentation-card">
-                    <h4><a href="presentations/kinesis.pdf" target="_blank">Amazon Kinesis</a></h4>
+            <h3 class="year-header">2017</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2017 fullstack.pdf" target="_blank" class="presentation-card">
+                    <h4>Full Stack Development</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -798,11 +902,14 @@
                         </svg>
                         PDF
                     </div>
-                    <p>Streaming data at scale with Amazon Kinesis—architecture and implementation patterns.</p>
-                </div>
+                    <p>End-to-end web development—from frontend interfaces to backend architecture.</p>
+                </a>
+            </div>
 
-                <div class="presentation-card">
-                    <h4><a href="presentations/luigi.pdf" target="_blank">Luigi</a></h4>
+            <h3 class="year-header">2016</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2016 nosql and cassandra - IBM.pdf" target="_blank" class="presentation-card">
+                    <h4>NoSQL and Cassandra</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -810,23 +917,10 @@
                         </svg>
                         PDF
                     </div>
-                    <p>Building data pipelines with Luigi—workflow orchestration for batch processing.</p>
-                </div>
-
-                <div class="presentation-card">
-                    <h4><a href="presentations/dropwizard.pdf" target="_blank">Dropwizard</a></h4>
-                    <div class="presentation-platform">
-                        <svg viewBox="0 0 24 24">
-                            <path
-                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
-                        </svg>
-                        PDF
-                    </div>
-                    <p>RESTful web services with Dropwizard—production-ready Java microservices framework.</p>
-                </div>
-
-                <div class="presentation-card">
-                    <h4><a href="presentations/git.pdf" target="_blank">Git</a></h4>
+                    <p>IBM presentation—deep dive into NoSQL databases and Apache Cassandra.</p>
+                </a>
+                <a href="presentations/2016 git.pdf" target="_blank" class="presentation-card">
+                    <h4>Git</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -835,10 +929,9 @@
                         PDF
                     </div>
                     <p>Mastering Git—version control fundamentals, branching strategies, and best practices.</p>
-                </div>
-
-                <div class="presentation-card">
-                    <h4><a href="presentations/git-flow.pdf" target="_blank">Git Flow</a></h4>
+                </a>
+                <a href="presentations/2016 git-flow.pdf" target="_blank" class="presentation-card">
+                    <h4>Git Flow</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -847,10 +940,92 @@
                         PDF
                     </div>
                     <p>The Git Flow workflow—structured branching model for release management.</p>
-                </div>
+                </a>
+            </div>
 
-                <div class="presentation-card">
-                    <h4><a href="presentations/git-for-svn.pdf" target="_blank">Git for SVN Users</a></h4>
+            <h3 class="year-header">2014</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2014 devops-jungle-of-tools.pdf" target="_blank" class="presentation-card">
+                    <h4>DevOps Jungle of Tools</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Navigating the DevOps ecosystem—tools, practices, and strategies for modern infrastructure.</p>
+                </a>
+                <a href="presentations/2014 kinesis.pdf" target="_blank" class="presentation-card">
+                    <h4>Amazon Kinesis</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Streaming data at scale with Amazon Kinesis—architecture and implementation patterns.</p>
+                </a>
+                <a href="presentations/2014 luigi.pdf" target="_blank" class="presentation-card">
+                    <h4>Luigi</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Building data pipelines with Luigi—workflow orchestration for batch processing.</p>
+                </a>
+            </div>
+
+            <h3 class="year-header">2013</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2013 dropwizard.pdf" target="_blank" class="presentation-card">
+                    <h4>Dropwizard</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>RESTful web services with Dropwizard—production-ready Java microservices framework.</p>
+                </a>
+            </div>
+
+            <h3 class="year-header">2012</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2012 Continues Deployment @ outbrain.pdf" target="_blank"
+                    class="presentation-card">
+                    <h4>Continuous Deployment @ Outbrain</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Implementing continuous deployment—from automated testing to production releases at scale.</p>
+                </a>
+            </div>
+
+            <h3 class="year-header">2011</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2011 Cassandra Internals.pdf" target="_blank" class="presentation-card">
+                    <h4>Cassandra Internals</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Deep dive into Apache Cassandra's internal architecture and data structures.</p>
+                </a>
+                <a href="presentations/2011 git-for-svn.pdf" target="_blank" class="presentation-card">
+                    <h4>Git for SVN Users</h4>
                     <div class="presentation-platform">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -859,7 +1034,22 @@
                         PDF
                     </div>
                     <p>Transitioning from SVN to Git—concepts, workflows, and migration strategies.</p>
-                </div>
+                </a>
+            </div>
+
+            <h3 class="year-header">2009</h3>
+            <div class="presentations-grid">
+                <a href="presentations/2009 Unit Testing.pdf" target="_blank" class="presentation-card">
+                    <h4>Unit Testing</h4>
+                    <div class="presentation-platform">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        PDF
+                    </div>
+                    <p>Foundations of unit testing—principles, patterns, and best practices.</p>
+                </a>
             </div>
 
             <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--color-muted); text-align: center;">
