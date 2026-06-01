@@ -401,21 +401,9 @@ h2.slide-title .dim    { color:var(--text-muted); }
 </section>
 
 <!-- ============================================================ -->
-<!-- SLIDE 01 · SPEAKER INTRO — PHOTO                            -->
+<!-- SLIDE 01 · SECTION 1.1 — AGENT TIMELINE (interactive)      -->
 <!-- ============================================================ -->
-<section class="slide slide--photo" id="slide-1">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="slide-inner" style="justify-content:center; align-items:center;">
-    <img src="2026-your-agent-built-it-assets/ran-mic.jpg" alt="Ran Tavory"
-         style="height:min(88vh,88vw); width:min(88vh,88vw); object-fit:cover; border-radius:50%; display:block;">
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- SLIDE 02 · SECTION 1.1 — AGENT TIMELINE (interactive)      -->
-<!-- ============================================================ -->
-<section class="slide slide--timeline" id="slide-2" data-steps="8" data-step="0">
+<section class="slide slide--timeline" id="slide-1" data-steps="8" data-step="0">
   <div class="tl-wrap">
     <div class="tl-title-row">
       <span class="tl-title-main">The Evolution of Coding Agents</span>
@@ -475,6 +463,18 @@ h2.slide-title .dim    { color:var(--text-muted); }
         <div class="tl-growth-step"><strong>multi-day</strong>supervised execution</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 02 · SPEAKER INTRO — PHOTO                            -->
+<!-- ============================================================ -->
+<section class="slide slide--photo" id="slide-2">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner" style="justify-content:center; align-items:center;">
+    <img src="2026-your-agent-built-it-assets/ran-mic.jpg" alt="Ran Tavory"
+         style="height:min(88vh,88vw); width:min(88vh,88vw); object-fit:cover; border-radius:50%; display:block;">
   </div>
 </section>
 
@@ -1518,9 +1518,7 @@ const NOTES = {
   0: `<p><strong>Cold open — no charts yet.</strong> This slide lives on screen while you walk out. The P0 badge sets the tone before you say a word.</p>
 <p>The talk starts with the thesis, not data. Let the audience read it. Then: <em>"Let me tell you how I ended up here."</em></p>`,
 
-  1: `<p>I want to start with a personal story.</p>`,
-
-  2: `<ul>
+  1: `<ul>
 <li>About 5 years ago the world got to know GitHub's co-pilot. It was a sophisticated auto-complete, not always correct, not always top-notch, but still very useful and usage caught on fire. After using it for the first time I never looked back.</li>
 <li>Years later came Cursor and Windsurf and Aider which was my personal favorite for a while.</li>
 <li>Models were getting smarter and smarter and their harness improved significantly.</li>
@@ -1536,6 +1534,8 @@ const NOTES = {
 <li>My personal story turns out to match the scientifically measured history.</li>
 </ul>
 <p><strong>Close:</strong> Hold the moment. <em>"That's my story. Let me show you the curve underneath it."</em> → straight into the AI Digest chart.</p>`,
+
+  2: `<p>I want to start with a personal story.</p>`,
 
   3: `<ul>
 <li><strong>Frame METR carefully:</strong> Task-completion time horizons have grown exponentially since 2019, with no sign of slowing. As of early 2026, frontier models reliably handle tasks that take a human expert several hours. Extrapolating the curve, multi-day tasks are plausibly within reach by 2027.</li>
