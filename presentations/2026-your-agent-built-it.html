@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Agent Built It. Who the 🤬 Runs It? — AWS X DevOps 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* === RESET === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* === VIEWPORT BASE (mandatory — every slide fits 100vh, no scroll) === */
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.slide {
+  width: 100vw; height: 100vh; height: 100dvh;
+  overflow: hidden; scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  position: relative; background: var(--bg);
+}
+
+/* === THEME === */
+:root {
+  --bg:          #0b0b0b;
+  --bg-alt:      #0e0c0a;
+  --text:        #ffffff;
+  --text-dim:    #d8d4ce;
+  --text-muted:  #aaa;
+  --text-faint:  #777;
+  --amber:       #c08840;
+  --amber-dim:   rgba(192,136,64,0.3);
+  --amber-faint: rgba(192,136,64,0.08);
+  --red:         #c84830;
+
+  --font-d: 'Manrope', sans-serif;
+  --font-m: 'IBM Plex Mono', monospace;
+
+  /* Fluid type scale */
+  --t-hero:   clamp(2.5rem, min(11vw, 14vh), 12rem);
+  --t-xl:     clamp(2rem,   5.5vw, 5.5rem);
+  --t-lg:     clamp(1.6rem, 3.5vw, 3.5rem);
+  --t-md:     clamp(1.1rem, 2vw,   2rem);
+  --t-body:   clamp(1.1rem, 2vw,   1.8rem);
+  --t-body-lg:clamp(1.3rem, 2.8vw, 2.5rem);
+  --t-sm:     clamp(0.9rem, 1.5vw, 1.3rem);
+  --t-mono:   clamp(0.6rem, 0.85vw,0.72rem);
+
+  /* Spacing */
+  --pad:  clamp(1.5rem, 3.5vw, 4rem);
+  --gap:  clamp(0.5rem, 1.2vh,  1.2rem);
+  --gap-lg: clamp(1rem, 2.5vh,  2.5rem);
+}
+
+body { font-family: var(--font-d); color: var(--text); }
+
+/* === ORB BACKGROUNDS === */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(130px); pointer-events: none;
+  animation: drift 10s ease-in-out infinite alternate;
+}
+.orb-1 { width: 55vw; height: 55vw; background: radial-gradient(circle,#b07830 0%,#6a3e10 60%,transparent 100%); top:-20%; right:-15%; opacity:0.2; }
+.orb-2 { width: 40vw; height: 40vw; background: radial-gradient(circle,#8b4a1a 0%,#4a2008 60%,transparent 100%); bottom:-15%; left:-10%; opacity:0.15; animation-delay:-5s; }
+/* Fainter versions for content slides */
+.slide--content .orb-1 { opacity:0.07; }
+.slide--content .orb-2 { opacity:0.05; }
+
+/* === SLIDE LAYOUT SYSTEM === */
+.slide-inner {
+  height: 100%; padding: var(--pad);
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: relative; z-index: 2;
+}
+.slide-top    { display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+.slide-body   { flex:1; display:flex; flex-direction:column; justify-content:center; gap:var(--gap); min-height:0; overflow:hidden; }
+.slide-bottom { display:flex; justify-content:space-between; align-items:flex-end; flex-shrink:0; }
+
+/* === LABELS & TAGS === */
+.tag { font-family:var(--font-m); font-size:var(--t-mono); letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); }
+.slide-num { font-family:var(--font-m); font-size:var(--t-mono); color:rgba(192,136,64,0.25); letter-spacing:0.1em; }
+
+/* === HEADINGS === */
+h2.slide-title {
+  font-weight:800; font-size:var(--t-xl); line-height:1.0;
+  letter-spacing:-0.03em; color:var(--text);
+}
+h2.slide-title .accent { color:var(--amber); }
+h2.slide-title .dim    { color:var(--text-muted); }
+
+/* === BULLETS === */
+.bullets { list-style:none; display:flex; flex-direction:column; gap:var(--gap); }
+.bullets li {
+  font-size:var(--t-body); line-height:1.55; color:var(--text-dim);
+  padding-left:1.5em; position:relative;
+}
+.bullets li::before { content:'—'; position:absolute; left:0; color:var(--amber); font-weight:700; }
+.bullets li strong { color:var(--text); font-weight:700; }
+.bullets li em { font-style:normal; color:var(--amber); }
+.bullets.large li { font-size:var(--t-body-lg); gap: var(--gap-lg); }
+
+/* === STAT BLOCKS === */
+.stat-row { display:flex; gap:clamp(1.5rem,4vw,4rem); align-items:flex-start; flex-wrap:wrap; }
+.stat-num { font-size:clamp(2rem,5vw,5rem); font-weight:800; color:var(--amber); line-height:1; letter-spacing:-0.04em; }
+.stat-label { font-size:var(--t-sm); color:var(--text-muted); margin-top:0.4em; line-height:1.4; }
+
+/* === TABLE === */
+.compare-table { width:100%; border-collapse:collapse; }
+.compare-table th {
+  text-align:left; font-family:var(--font-m); font-size:var(--t-sm);
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--amber);
+  padding-bottom:clamp(0.4rem,1vh,0.8rem); border-bottom:1px solid var(--amber-dim);
+  padding-right:2rem;
+}
+.compare-table td {
+  padding:clamp(0.5rem,1.2vh,1rem) clamp(0.5rem,1vw,1rem) clamp(0.5rem,1.2vh,1rem) 0;
+  font-size:var(--t-body-lg); color:var(--text-dim); vertical-align:top;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.compare-table td:first-child { color:var(--text-muted); }
+.compare-table td:last-child { color:var(--text); }
+.compare-table tr:last-child td { border-bottom:none; }
+
+/* === TWO COLUMN PANELS === */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:clamp(1rem,2.5vw,2.5rem); flex:1; min-height:0; }
+.panel { display:flex; flex-direction:column; gap:var(--gap); }
+.panel-label { font-family:var(--font-m); font-size:var(--t-mono); letter-spacing:0.15em; text-transform:uppercase; color:var(--text-faint); margin-bottom:0.3rem; }
+.panel--muted { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:4px; padding:clamp(0.8rem,1.5vw,1.5rem); }
+.panel--vivid { background:var(--amber-faint); border:1px solid var(--amber-dim); border-radius:4px; padding:clamp(0.8rem,1.5vw,1.5rem); }
+
+/* === CODE BLOCKS === */
+.code-block {
+  font-family:var(--font-m); font-size:clamp(0.65rem,1vw,0.85rem);
+  line-height:1.8; color:#777; overflow:hidden;
+}
+.code-block .ok     { color:#5a9a70; }
+.code-block .demand { color:var(--amber); }
+.code-block .good   { color:#c0bbb4; }
+
+/* === QUOTE / BIG TEXT === */
+.big-quote {
+  font-size:var(--t-lg); font-weight:800; line-height:1.15;
+  letter-spacing:-0.03em; color:var(--text);
+}
+.big-quote em { font-style:normal; color:var(--amber); }
+.quote-attr {
+  font-family:var(--font-m); font-size:var(--t-mono);
+  color:var(--text-faint); margin-top:1.5rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+}
+
+/* === 2 AM BLACK SLIDE === */
+.slide--black { background:#000; }
+.slide--black .slide-inner { justify-content:center; align-items:center; }
+.two-am-text {
+  text-align:center; font-size:clamp(1.6rem,4vw,4rem);
+  font-weight:800; line-height:1.5; letter-spacing:-0.02em;
+  color:#e8e4df; max-width:20ch;
+}
+.two-am-text em { font-style:normal; display:block; color:rgba(232,228,223,0.5); font-size:0.65em; margin-top:1.2em; }
+
+/* === SECTION BREAK === */
+.slide--section { background:var(--bg-alt); }
+.section-bg-num {
+  position:absolute; right:-0.05em; top:50%; transform:translateY(-50%);
+  font-size:clamp(12rem,28vw,26rem); font-weight:800; line-height:1;
+  color:rgba(255,255,255,0.022); letter-spacing:-0.06em;
+  pointer-events:none; user-select:none; z-index:1;
+}
+
+/* === TITLE SLIDE SPECIFICS === */
+.slide--title .slide-inner { gap:0; }
+.title-hero {
+  font-weight:800; line-height:0.88;
+  letter-spacing:-0.04em; color:var(--text);
+  width:100%;
+}
+.hero-line { display:block; white-space:nowrap; }
+.title-hero .accent { color:var(--amber); }
+
+.alert-badge {
+  display:flex; align-items:center; gap:0.55rem;
+  background:rgba(180,55,35,0.14); border:1px solid rgba(210,80,50,0.38);
+  border-radius:3px; padding:0.4rem 0.85rem;
+}
+.alert-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--red); box-shadow:0 0 7px rgba(200,72,48,0.9);
+  animation:blink 1.4s infinite;
+}
+.alert-text { font-family:var(--font-m); font-size:var(--t-mono); color:rgba(210,100,70,0.9); letter-spacing:0.12em; text-transform:uppercase; }
+
+.thesis-block { position:relative; padding-left:clamp(1rem,2vw,2rem); }
+.thesis-block::before {
+  content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  height:3.5em; width:1px; background:rgba(192,136,64,0.35);
+}
+.thesis-text { font-size:clamp(1.2rem,2.4vw,2.2rem); line-height:1.5; color:#b8b4ae; font-weight:400; }
+
+.speaker-meta { text-align:right; }
+.speaker-name { font-size:var(--t-sm); font-weight:700; color:#555; }
+.speaker-conf { font-family:var(--font-m); font-size:var(--t-mono); color:#333; letter-spacing:0.1em; text-transform:uppercase; margin-top:0.25rem; }
+
+/* === CLOSING SLIDE === */
+.slide--closing .slide-inner { justify-content:center; align-items:flex-start; }
+.closing-line {
+  font-size:clamp(1.8rem,4.5vw,4.5rem); font-weight:800;
+  line-height:1.1; letter-spacing:-0.03em; color:var(--text);
+  max-width:20ch;
+}
+.closing-line .accent { color:var(--amber); }
+.closing-line .dim { color:var(--text-faint); display:block; font-size:0.55em; font-weight:400; margin-top:0.8em; letter-spacing:0em; }
+
+/* === THREE QUESTIONS SLIDE === */
+.questions-list { list-style:none; display:flex; flex-direction:column; gap:var(--gap-lg); }
+.question-item { display:flex; gap:1.5rem; align-items:flex-start; }
+.question-num {
+  font-family:var(--font-m); font-size:var(--t-mono); color:var(--amber);
+  flex-shrink:0; padding-top:0.2em;
+}
+.question-text { font-size:var(--t-body-lg); line-height:1.5; color:var(--text-dim); }
+.question-text strong { color:var(--text); display:block; margin-bottom:0.2em; }
+
+/* === PROGRESS BAR === */
+.progress-bar { position:fixed; top:0; left:0; height:2px; background:linear-gradient(to right,var(--amber),#e0a050); transition:width 0.3s ease; z-index:500; width:0%; }
+
+/* === NAV DOTS === */
+.nav-dots { position:fixed; right:clamp(0.6rem,1.2vw,1.2rem); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:5px; z-index:500; }
+.nav-dot { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.12); cursor:pointer; transition:all 0.2s; border:none; padding:0; }
+.nav-dot.active { background:var(--amber); height:12px; border-radius:2px; }
+
+/* === SPEAKER NOTES PANEL === */
+.notes-panel {
+  position:fixed; bottom:0; left:0; right:0; height:40vh;
+  background:rgba(6,5,3,0.97); border-top:1px solid var(--amber-dim);
+  transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  z-index:900; display:flex; flex-direction:column; overflow:hidden;
+}
+.notes-panel.open { transform:translateY(0); }
+.notes-header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0.6rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.05); flex-shrink:0;
+}
+.notes-header-tag { font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--amber); }
+.notes-close-hint { font-family:var(--font-m); font-size:0.55rem; color:#333; letter-spacing:0.1em; }
+.notes-body { padding:1rem 1.5rem 1.5rem; overflow-y:auto; flex:1; }
+.notes-body p { font-size:clamp(1.1rem,1.5vw,1.3rem); line-height:1.75; color:#888; }
+.notes-body p+p { margin-top:0.7rem; }
+.notes-body strong { color:#bbb; }
+.notes-body em { font-style:normal; color:var(--amber); }
+
+/* === KEYBOARD HINT === */
+.kb-hint { position:fixed; bottom:0.8rem; left:1.5rem; font-family:var(--font-m); font-size:0.5rem; color:#222; letter-spacing:0.1em; z-index:400; }
+
+/* === ANIMATIONS === */
+.reveal { opacity:0; transform:translateY(16px); transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+.slide.visible .reveal { opacity:1; transform:translateY(0); }
+.slide.visible .reveal:nth-child(1) { transition-delay:0.05s; }
+.slide.visible .reveal:nth-child(2) { transition-delay:0.15s; }
+.slide.visible .reveal:nth-child(3) { transition-delay:0.25s; }
+.slide.visible .reveal:nth-child(4) { transition-delay:0.35s; }
+.slide.visible .reveal:nth-child(5) { transition-delay:0.45s; }
+.slide.visible .reveal:nth-child(6) { transition-delay:0.55s; }
+.slide.visible .reveal:nth-child(7) { transition-delay:0.65s; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.1} }
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(20px,-25px) scale(1.07)} }
+
+/* Responsive */
+@media (max-height:700px) { :root { --pad:clamp(1rem,2.5vw,2rem); --gap:clamp(0.3rem,0.8vh,0.8rem); } }
+@media (max-height:600px) { .nav-dots,.kb-hint{display:none} }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important} }
+
+/* === TIMELINE SLIDE === */
+.slide--timeline { background: var(--bg); }
+.tl-wrap {
+  height: 100%; width: 100%;
+  display: flex; flex-direction: column; overflow: hidden;
+  padding: 1.5vh 3vw 1vh;
+  position: relative; z-index: 2;
+}
+.tl-title-row {
+  display: flex; align-items: baseline; gap: 0.6rem;
+  margin-bottom: 0.8vh; flex-shrink: 0;
+}
+.tl-title-main { font-weight: 800; font-size: clamp(1.2rem,2.8vh,2.2rem); letter-spacing: -0.02em; color: var(--text); }
+.tl-title-sub { font-family: var(--font-m); font-size: clamp(0.8rem,1.6vh,1.3rem); color: var(--amber); letter-spacing: 0.12em; }
+
+.tl-era-bar { display: flex; gap: 3px; flex-shrink: 0; margin-bottom: 0.6vh; }
+.tl-era { display: flex; flex-direction: column; justify-content: center; padding: 0.6vh 1vw; border-radius: 2px; }
+.tl-era-name { font-family: var(--font-m); font-size: clamp(11px,1.6vh,18px); letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
+.tl-era-sub { font-size: clamp(10px,1.3vh,15px); color: rgba(255,255,255,0.45); margin-top: 2px; }
+.tl-era-1 { background: rgba(90,74,46,0.25); border: 1px solid rgba(106,82,48,0.7); }
+.tl-era-1 .tl-era-name { color: #8a7040; }
+.tl-era-2 { background: rgba(138,96,48,0.2); border: 1px solid rgba(154,112,53,0.7); }
+.tl-era-2 .tl-era-name { color: #b08040; }
+.tl-era-3 { background: rgba(192,136,64,0.12); border: 1px solid rgba(192,136,64,0.5); }
+.tl-era-3 .tl-era-name { color: var(--amber); }
+.tl-era-4 { background: rgba(216,160,80,0.12); border: 1px solid rgba(216,160,80,0.5); }
+.tl-era-4 .tl-era-name { color: #d8a050; }
+
+/* Cards row — all 9 divide the width equally, no scroll */
+.tl-cards {
+  flex-shrink: 0;
+  display: flex; align-items: flex-start; gap: 4px; overflow: hidden;
+}
+.tl-card {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 0.9vh;
+  padding: 1.8vh 0.9vw;
+  border-top: 2px solid var(--era-clr);
+  background: rgba(255,255,255,0.025);
+  border-radius: 0 0 3px 3px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.tl-card.revealed { opacity: 1; transform: translateY(0); }
+[data-reveal].revealed { opacity: 1 !important; }
+.tl-card.era-1 { --era-clr: #6a5230; }
+.tl-card.era-2 { --era-clr: #9a7035; }
+.tl-card.era-3 { --era-clr: #c08840; }
+.tl-card.era-4 { --era-clr: #d8a050; }
+.tl-card-top { display: flex; flex-direction: column; gap: 0.8vh; }
+.tl-card-logo { height: clamp(32px,5.5vh,60px); width: auto; max-width: clamp(32px,5.5vh,60px); object-fit: contain; filter: brightness(0) invert(1); opacity: 0.85; flex-shrink: 0; }
+.tl-card-date { font-family: var(--font-m); font-size: clamp(11px,1.6vh,17px); color: var(--era-clr); letter-spacing: 0.06em; }
+.tl-card-name { font-weight: 800; font-size: clamp(14px,2.4vh,26px); line-height: 1.15; color: var(--text); letter-spacing: -0.01em; }
+.tl-card-scope { display: flex; flex-direction: column; gap: 0.4vh; }
+.tl-card-scope span { font-size: clamp(11px,1.5vh,17px); color: var(--text-muted); line-height: 1.3; }
+.tl-card-time { font-family: var(--font-m); font-size: clamp(10px,1.3vh,15px); color: var(--era-clr); padding-top: 0.6vh; border-top: 1px solid rgba(255,255,255,0.08); opacity: 0.9; margin-top: 0.5vh; }
+
+.tl-growth {
+  flex-shrink: 0; margin-top: 1.5vh;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.4s ease 0.05s, transform 0.4s ease 0.05s;
+}
+.tl-growth.revealed { opacity: 1; transform: translateY(0); }
+.tl-growth-label { font-family: var(--font-m); font-size: clamp(11px,1.4vh,16px); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.4vh; }
+.tl-growth-track { display: flex; }
+.tl-growth-step {
+  flex: 1; text-align: center; padding: 0.8vh 2px;
+  font-size: clamp(12px,1.5vh,17px); color: rgba(255,255,255,0.5);
+  border-left: 1px solid rgba(255,255,255,0.07);
+  background: rgba(192,136,64,0.04);
+}
+.tl-growth-step:first-child { border-left: none; }
+.tl-growth-step strong { display: block; font-size: clamp(14px,2vh,22px); color: var(--amber); margin-bottom: 1px; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+<div class="kb-hint">← → navigate · N = speaker notes · ESC close</div></div>
+
+<!-- NOTES PANEL -->
+<div class="notes-panel" id="notesPanel" role="complementary" aria-label="Speaker notes">
+  <div class="notes-header">
+    <span class="notes-header-tag">Speaker Notes — <span id="notesSlideLabel">Slide 1</span></span>
+    <span class="notes-close-hint">S or ESC to close</span>
+  </div>
+  <div class="notes-body" id="notesBody"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 01 · TITLE                                            -->
+<!-- ============================================================ -->
+<section class="slide slide--title" id="slide-0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">AWS X DevOps Keynote · 2026</span>
+      <div class="alert-badge">
+        <div class="alert-dot"></div>
+        <span class="alert-text">P0 Incident · On-call: You</span>
+      </div>
+    </div>
+    <div class="slide-body" style="justify-content:center;">
+      <h1 class="title-hero reveal" id="titleHero">
+        <span class="hero-line">Your Agent</span>
+        <span class="hero-line">Built It.</span>
+        <span class="hero-line">Who the <span class="accent">🤬</span></span>
+        <span class="hero-line">Runs It?</span>
+      </h1>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--gap);">
+      <div class="thesis-block reveal">
+        <p class="thesis-text">Soon, you'll be on call for code you never read.<br>
+        Your job is no longer to know every line.<br>
+        It's to manage the system that runs it.</p>
+      </div>
+      <div class="slide-bottom reveal">
+        <div></div>
+        <div class="speaker-meta">
+          <div class="speaker-name">Ran Tavory</div>
+          <div class="speaker-conf">AWS X DevOps · 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 01 · SPEAKER INTRO — PHOTO                            -->
+<!-- ============================================================ -->
+<section class="slide slide--photo" id="slide-1">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner" style="justify-content:center; align-items:center;">
+    <img src="2026-your-agent-built-it-assets/ran-mic.jpg" alt="Ran Tavory"
+         style="height:min(88vh,88vw); width:min(88vh,88vw); object-fit:cover; border-radius:50%; display:block;">
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 02 · SECTION 1.1 — AGENT TIMELINE (interactive)      -->
+<!-- ============================================================ -->
+<section class="slide slide--timeline" id="slide-2" data-steps="8" data-step="0">
+  <div class="tl-wrap">
+    <div class="tl-title-row">
+      <span class="tl-title-main">The Evolution of Coding Agents</span>
+      <span class="tl-title-sub">2021 → 2026</span>
+      <span class="tl-step-hint" id="tlStepHint"></span>
+    </div>
+    <div class="tl-era-bar">
+      <div class="tl-era tl-era-1" style="flex:1"><span class="tl-era-name">AUTOCOMPLETE ERA</span><span class="tl-era-sub">Predictive assistance</span></div>
+      <div class="tl-era tl-era-2" style="flex:2"><span class="tl-era-name">AI IDE ERA</span><span class="tl-era-sub">Conversational editing</span></div>
+      <div class="tl-era tl-era-3" style="flex:3"><span class="tl-era-name">AGENT ERA</span><span class="tl-era-sub">Autonomous execution</span></div>
+      <div class="tl-era tl-era-4" style="flex:3"><span class="tl-era-name">MULTI-AGENT ERA</span><span class="tl-era-sub">Orchestrated systems</span></div>
+    </div>
+    <div class="tl-cards">
+      <div class="tl-card era-1" data-reveal="1">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/copilot.svg" alt=""><div class="tl-card-date">2021</div><div class="tl-card-name">GitHub Copilot</div></div>
+        <div class="tl-card-scope"><span>Single functions</span><span>Boilerplate</span><span>~10–50 LOC</span></div>
+        <div class="tl-card-time">sec – min</div>
+      </div>
+      <div class="tl-card era-2" data-reveal="2">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/cursor.svg" alt=""><div class="tl-card-date">2023</div><div class="tl-card-name">Cursor</div></div>
+        <div class="tl-card-scope"><span>Multi-file edits</span><span>Refactors</span><span>~100–500 LOC</span></div>
+        <div class="tl-card-time">minutes</div>
+      </div>
+      <div class="tl-card era-2" data-reveal="3">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/aider.svg" alt=""><div class="tl-card-date">2023</div><div class="tl-card-name">Aider</div></div>
+        <div class="tl-card-scope"><span>Repo patching</span><span>Iterative debug</span><span>Git-aware CLI</span></div>
+        <div class="tl-card-time">tens of min</div>
+      </div>
+      <div class="tl-card era-3" data-reveal="4">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/windsurf.svg" alt=""><div class="tl-card-date">2024</div><div class="tl-card-name">Windsurf</div></div>
+        <div class="tl-card-scope"><span>Autonomous nav</span><span>Cross-repo</span><span>Hour-scale</span></div>
+        <div class="tl-card-time">multi-hour</div>
+      </div>
+      <div class="tl-card era-4" data-reveal="5">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/claude.svg" alt=""><div class="tl-card-date">2025</div><div class="tl-card-name">Claude Code</div></div>
+        <div class="tl-card-scope"><span>Repo-wide flows</span><span>Large refactors</span><span>Day-scale exec</span></div>
+        <div class="tl-card-time">hours – days</div>
+      </div>
+      <div class="tl-card era-4" data-reveal="6">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/openai.svg" alt=""><div class="tl-card-date">2026</div><div class="tl-card-name">Codex</div></div>
+        <div class="tl-card-scope"><span>Long-running tasks</span><span>Planning + exec</span><span>Tool orchestration</span></div>
+        <div class="tl-card-time">multi-day</div>
+      </div>
+      <div class="tl-card era-4" data-reveal="7">
+        <div class="tl-card-top"><img class="tl-card-logo" src="2026-your-agent-built-it-assets/logos/cursor.svg" alt=""><div class="tl-card-date">2026</div><div class="tl-card-name">Cursor 3</div></div>
+        <div class="tl-card-scope"><span>Coordinated agents</span><span>Persistent memory</span><span>Multi-day projects</span></div>
+        <div class="tl-card-time">multi-day</div>
+      </div>
+    </div>
+    <div class="tl-growth" data-reveal="8">
+      <div class="tl-growth-label">Task horizon growth</div>
+      <div class="tl-growth-track">
+        <div class="tl-growth-step"><strong>30 sec</strong>token prediction</div>
+        <div class="tl-growth-step"><strong>5 min</strong>conv. editing</div>
+        <div class="tl-growth-step"><strong>1 hour</strong>agentic loops</div>
+        <div class="tl-growth-step"><strong>1 workday</strong>repo-wide tasks</div>
+        <div class="tl-growth-step"><strong>multi-day</strong>supervised execution</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 02b · AGENT TIMELINE — static image backup (hidden)   -->
+<section class="slide-backup" id="slide-2b" style="display:none;">
+  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0b0b0b;overflow:hidden;">
+    <img src="2026-your-agent-built-it-assets/agent_timeline.png" alt="Agent timeline"
+         style="max-width:100%;max-height:100%;object-fit:contain;">
+  </div>
+</section>
+
+<!-- SLIDE 03 · SECTION 1.2 — THE EXPONENTIAL                   -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-3" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">03 / 26</span>
+    </div>
+    <div class="slide-body" style="justify-content:flex-start;">
+      <h2 class="slide-title reveal" style="flex-shrink:0;">Coding agents, by how long a task they can complete.</h2>
+      <div class="reveal" style="flex:1;min-height:0;position:relative;width:100%;">
+        <!-- Two-phase animation:
+             Phase 1 (0→1 hr scale): curve draws left→right, o1 at top = impressive
+             Phase 2 (0→10 hr scale): zoom out, everything flatlines, Opus 4.6 shoots to top
+             Y_p1(h)=375-(h/1.1)*345  |  Y_p2(h)=375-(h/11)*345
+             X(yr)=100+(yr-2019)*96 -->
+        <svg viewBox="0 0 900 410" preserveAspectRatio="xMidYMid meet"
+             style="width:100%;height:100%;display:block;max-height:58vh;" aria-label="METR time-horizons two-phase">
+          <defs>
+            <linearGradient id="mb" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c08840" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#c08840" stop-opacity="0.01"/>
+            </linearGradient>
+            <filter id="gn" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="8" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <clipPath id="cp"><rect x="100" y="25" width="760" height="360"/></clipPath>
+          </defs>
+
+          <!-- STATIC: x-axis + year labels (shared) -->
+          <line x1="100" y1="375" x2="860" y2="375" stroke="#fff" stroke-opacity="0.15" stroke-width="1"/>
+          <text x="100" y="393" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#555">2019</text>
+          <text x="292" y="393" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#555">2021</text>
+          <text x="484" y="393" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#555">2023</text>
+          <text x="676" y="393" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#c08840">2025</text>
+          <text x="772" y="393" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#777">2026</text>
+          <text x="100" y="406" font-family="IBM Plex Mono,monospace" font-size="10" fill="#444">Data: METR Time Horizons 1.1 (metr.org) · CC-BY AIDigest</text>
+
+          <!-- PHASE 1: 0 to 1 hour scale. o1 sits at the very top. -->
+          <g id="metrP1">
+            <line x1="100" y1="61" x2="860" y2="61" stroke="#c08840" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3,4"/>
+            <text x="96" y="44"  text-anchor="end" font-family="Manrope,sans-serif"      font-size="11" fill="#888">&#x2191; length of tasks AIs can do</text>
+            <text x="96" y="65"  text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="13" fill="#c08840" font-weight="700">1 hour</text>
+            <text x="96" y="376" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="11" fill="#555">0 secs</text>
+            <path clip-path="url(#cp)"
+                  d="M 100,375 L 119,375 C 280,375 380,374 474,344
+                     C 510,340 535,340 569,344 C 605,340 630,280 655,218
+                     C 661,185 666,125 674,61 L 674,375 Z"
+                  fill="url(#mb)" opacity="0.7"/>
+            <path id="metrCurve1" clip-path="url(#cp)"
+                  d="M 119,375 C 280,375 380,374 474,344
+                     C 510,340 535,340 569,344
+                     C 605,340 630,280 655,218
+                     C 661,185 666,125 674,61"
+                  stroke="#c08840" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="119" cy="375" r="4"   fill="#666"/>
+            <circle cx="215" cy="375" r="4"   fill="#666"/>
+            <circle cx="388" cy="372" r="4"   fill="#777"/>
+            <circle cx="474" cy="344" r="4.5" fill="#888"/>
+            <circle cx="569" cy="344" r="4.5" fill="#999"/>
+            <circle cx="655" cy="218" r="4.5" fill="#aaa"/>
+            <circle cx="674" cy="61"  r="10"  fill="#c08840" filter="url(#gn)"/>
+            <circle cx="674" cy="61"  r="5.5" fill="#1a1208" stroke="#c08840" stroke-width="2.5"/>
+            <text x="119" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#555">GPT-2</text>
+            <text x="215" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#555">GPT-3</text>
+            <text x="388" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#666">GPT-3.5</text>
+            <text x="474" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#666">GPT-4</text>
+            <text x="569" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#666">GPT-4o</text>
+            <text x="660" y="55"  text-anchor="end"    font-family="IBM Plex Mono,monospace" font-size="13" fill="#c08840" font-weight="700">o1 &#xB7; 1 hour</text>
+          </g>
+
+          <!-- PHASE 2: 0 to 10 hour scale. Initially hidden. Reveals on zoom-out. -->
+          <g id="metrP2" style="opacity:0">
+            <line x1="100" y1="344" x2="860" y2="344" stroke="#c08840" stroke-opacity="0.2"  stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="100" y1="272" x2="860" y2="272" stroke="#fff"    stroke-opacity="0.05" stroke-width="1"/>
+            <line x1="100" y1="61"  x2="860" y2="61"  stroke="#c08840" stroke-opacity="0.3"  stroke-width="1" stroke-dasharray="3,4"/>
+            <text x="96" y="44"  text-anchor="end" font-family="Manrope,sans-serif"      font-size="11" fill="#888">&#x2191; length of tasks AIs can do</text>
+            <text x="96" y="62"  text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10" fill="#c08840" opacity="0.65">~10 hrs</text>
+            <text x="96" y="74"  text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="13" fill="#c08840" font-weight="700">1 workday</text>
+            <text x="96" y="348" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="13" fill="#c08840">1 hour</text>
+            <text x="96" y="277" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="11" fill="#666">3 hrs</text>
+            <text x="96" y="376" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="11" fill="#555">0 secs</text>
+            <path clip-path="url(#cp)"
+                  d="M 119,370 C 280,370 430,370 474,369 C 520,369 545,369 569,369
+                     C 610,369 635,365 655,357 C 661,353 665,349 674,341
+                     C 682,335 690,330 703,320 C 712,307 718,280 732,243
+                     C 742,251 751,241 761,208 C 765,168 770,113 780,53
+                     L 780,70 C 770,130 765,185 761,228 C 751,258 742,260 732,257
+                     C 718,294 712,321 703,336 C 690,346 682,351 674,347
+                     C 665,353 661,357 655,361 C 635,369 610,373 569,373
+                     C 545,373 520,373 474,373 C 430,374 280,374 119,374 Z"
+                  fill="url(#mb)"/>
+            <!-- Base curve: GPT-2 through o1 at phase-2 scale (pre-drawn) -->
+            <path id="metrCurve2base" clip-path="url(#cp)"
+                  d="M 119,375 C 280,375 430,374 474,372
+                     C 510,372 540,372 569,372
+                     C 608,372 632,368 655,360
+                     C 661,356 666,351 674,344"
+                  stroke="#c08840" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85"/>
+            <!-- Extension: o1 to Opus 4.6 (drawn by JS after zoom-out) -->
+            <path id="metrCurve2ext" clip-path="url(#cp)"
+                  d="M 674,344 C 682,338 690,334 703,328
+                     C 711,315 717,288 732,250
+                     C 741,258 750,246 761,218
+                     C 765,173 771,116 780,61"
+                  stroke="#c08840" stroke-width="3" fill="none" stroke-linecap="round" style="opacity:0"/>
+            <!-- Projection dashed -->
+            <path id="metrProj" clip-path="url(#cp)"
+                  d="M 780,61 C 787,40 793,18 800,-2"
+                  stroke="#c08840" stroke-width="2.2" stroke-dasharray="7,5" fill="none"
+                  stroke-linecap="round" style="opacity:0"/>
+            <!-- Dots phase 2 -->
+            <circle cx="119" cy="375" r="4"   fill="#666"/>
+            <circle cx="215" cy="375" r="4"   fill="#666"/>
+            <circle cx="388" cy="374" r="4"   fill="#777"/>
+            <circle cx="474" cy="372" r="4.5" fill="#888"/>
+            <circle cx="569" cy="372" r="4.5" fill="#999"/>
+            <circle cx="655" cy="360" r="4.5" fill="#aaa"/>
+            <circle cx="674" cy="344" r="5.5" fill="#c08840" opacity="0.75"/>
+            <circle cx="703" cy="328" r="5"   fill="#c08840" style="opacity:0" id="metrDotO3"/>
+            <circle cx="732" cy="250" r="5"   fill="#c08840" style="opacity:0" id="metrDotG5"/>
+            <circle cx="751" cy="250" r="5"   fill="#c08840" style="opacity:0"/>
+            <circle cx="761" cy="218" r="5"   fill="#c08840" style="opacity:0" id="metrDotG52"/>
+            <circle cx="780" cy="61"  r="10"  fill="#c08840" filter="url(#gn)" style="opacity:0" id="metrDotOpus"/>
+            <circle cx="780" cy="61"  r="5.5" fill="#1a1208" stroke="#c08840" stroke-width="2.5" style="opacity:0" id="metrDotOpusInner"/>
+            <!-- Labels phase 2 base -->
+            <text x="119" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#555">GPT-2</text>
+            <text x="215" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#555">GPT-3</text>
+            <text x="388" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#666">GPT-3.5</text>
+            <text x="474" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#666">GPT-4</text>
+            <text x="569" y="388" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#666">GPT-4o</text>
+            <text x="660" y="340" text-anchor="end"    font-family="IBM Plex Mono,monospace" font-size="11" fill="#c08840">o1</text>
+            <!-- Labels phase 2 extension (hidden until curve draws) -->
+            <g id="metrLabels2ext" style="opacity:0">
+              <text x="709" y="323" text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="10" fill="#aaa">o3</text>
+              <text x="738" y="244" text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="10" fill="#aaa">GPT-5</text>
+              <text x="767" y="213" text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="10" fill="#aaa">GPT-5.2</text>
+              <text x="786" y="50"  text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="12" fill="#c08840" font-weight="700">Opus 4.6</text>
+              <text x="786" y="64"  text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="10" fill="#c08840" opacity="0.7">~10 hrs</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <p class="reveal" style="flex-shrink:0;font-size:var(--t-sm);color:var(--text-faint);">
+        Source: METR time-horizons study — exponential growth, no sign of slowing.
+      </p>
+    </div>
+    <div class="slide-bottom reveal">
+      <span class="tag" style="color:var(--text-faint);">The longer the task, the lower your intimacy with the output.</span>
+    </div>
+
+    <!-- OVERLAY: Moore's Law callout -->
+    <div data-reveal="1" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);z-index:10;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.6s ease;">
+      <p style="font-family:var(--font-h);font-size:var(--t-xl);color:var(--amber);text-align:center;letter-spacing:0.03em;">A new Moore's Law for AI agents.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 04 · AUDIENCE MOMENT                                  -->
+<!-- ============================================================ -->
+<section class="slide-backup slide--content" id="slide-4" style="display:none">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Audience</span>
+      <span class="slide-num">04 / 26</span>
+    </div>
+    <div class="slide-body" style="justify-content:center;align-items:flex-start;">
+      <div class="reveal">
+        <p style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:var(--gap-lg);">Show of hands</p>
+        <p class="big-quote" style="max-width:22ch;">How many of you have merged a PR this month that included code an agent wrote — and you didn't read it line by line?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 05 · SECTION 1.3 — YOU DIDN'T BUILD IT               -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-5" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">05 / 26</span>
+    </div>
+    <div class="slide-body" style="gap:var(--gap);">
+      <div class="two-col" style="flex:1;align-items:center;">
+        <div class="reveal" style="display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <img src="2026-your-agent-built-it-assets/you_build_it_you_run_it.jpg"
+               alt="Werner Vogels: You build it, you run it"
+               style="width:100%;max-height:min(72vh,620px);object-fit:cover;border-radius:6px;opacity:0.9;">
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap-lg);">
+          <p class="reveal" style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;">Werner Vogels · Amazon · 2006</p>
+          <style>
+            #slide-5 .s5-bullets { transition: opacity 0.5s ease; }
+            #slide-5[data-step="1"] .s5-bullets { opacity: 0 !important; pointer-events: none; }
+          </style>
+          <ul class="bullets s5-bullets" style="transition:opacity 0.5s ease;">
+            <li>Ownership and quality</li>
+            <li>Reduced friction</li>
+            <li>Cultural shift</li>
+          </ul>
+          <div data-reveal="1" style="border-left:2px solid var(--amber-dim);padding-left:clamp(1rem,2vw,2rem);opacity:0;transition:opacity 0.6s ease;">
+            <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.5;">You didn't build it.</p>
+            <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.5;">Your agent built it.</p>
+            <p style="font-size:var(--t-xl);color:var(--text);font-weight:800;line-height:1.1;margin-top:var(--gap);letter-spacing:-0.03em;">So who the 🤬<br>runs it?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 06 · SECTION 2 — THREE FORemote Code ExecutionS OVERVIEW               -->
+<!-- ============================================================ -->
+<section class="slide slide--section" id="slide-6">
+  <div class="section-bg-num">2</div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">06 / 26</span>
+    </div>
+    <div class="slide-body" style="align-items:center;">
+      <div style="display:inline-block;text-align:left;">
+        <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">Three forces making production harder.</h2>
+        <ul class="bullets large reveal" style="list-style:none;padding:0;">
+          <li style="padding-left:0;"><strong>Force 1 — Volume</strong></li>
+          <li style="padding-left:0;"><strong>Force 2 — Breadth</strong></li>
+          <li style="padding-left:0;"><strong>Force 3 — Lost intimacy</strong></li>
+        </ul>
+        <style>#slide-6 .bullets li::before { display:none; }</style>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 07 · FORemote Code Execution 1 — VOLUME                                 -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-7" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Force 1 — Volume</span>
+      <span class="slide-num">07 / 26</span>
+    </div>
+    <div class="slide-body" style="gap:var(--gap);">
+      <h2 class="slide-title reveal" >More code. More surface area for failure.</h2>
+      <div class="two-col reveal" style="flex:1;align-items:start;">
+        <ul class="bullets" style="align-self:center;">
+          <li><strong>1 billion commits</strong> on GitHub in 2025 — 25% YoY growth</li>
+          <li><strong>26.9%</strong> of production code is AI-authored (early 2026; n=4.2M devs)</li>
+          <li>Honest range: <strong>27–42%</strong> depending on "generated" vs "assisted"</li>
+          <li>Quality is following volume: copy/pasted lines <em>8.3% → 12.3%</em> <span style="color:var(--text-faint);font-size:0.85em;">(GitClear 2025, n=211M lines)</span></li>
+        </ul>
+        <div style="display:flex;flex-direction:column;gap:var(--gap);align-items:center;">
+          <img src="2026-your-agent-built-it-assets/gh_uptime_march26.jpg"
+               alt="GitHub uptime calendar March 2026 — 99.52% with several incident days"
+               style="width:100%;max-height:min(30vh,210px);object-fit:contain;border-radius:6px;opacity:0.85;">
+          <p style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--text-faint);text-align:center;">GitHub · March 2026 · 99.52% uptime</p>
+          <div data-reveal="1" style="display:flex;gap:clamp(0.75rem,2vw,1.5rem);align-items:center;width:100%;opacity:0;transition:opacity 0.6s ease;">
+            <img src="2026-your-agent-built-it-assets/dario_amodei.jpg"
+                 alt="Dario Amodei"
+                 style="width:clamp(52px,7vw,88px);height:clamp(52px,7vw,88px);object-fit:cover;border-radius:50%;flex-shrink:0;opacity:0.9;">
+            <blockquote style="margin:0;border-left:2px solid var(--amber-dim);padding-left:clamp(0.75rem,1.5vw,1.25rem);">
+              <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;font-style:italic;">"In six months AI would be writing 90 percent of code"</p>
+              <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-faint);margin-top:0.4rem;">Dario Amodei · Anthropic CEO</p>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-bottom reveal">
+      <span class="tag" style="color:var(--text-faint);font-size:0.55rem;">GitClear 2025 · n=211M lines · GitHub Octoverse 2025</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 08 · FORemote Code Execution 2 — BREADTH                                -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-8" data-steps="2" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Force 2 — Breadth</span>
+      <span class="slide-num">08 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal">The definition of "developer" <span class="accent">expanded.</span></h2>
+      <div class="stat-row reveal" style="margin-top:var(--gap);">
+        <div style="display:flex;align-items:center;gap:clamp(0.5rem,1.5vw,1rem);">
+          <div class="stat-num">63%</div>
+          <div class="stat-label" style="padding-bottom:0;">of vibe coders are non-developers<br><em style="font-style:normal;color:var(--text-faint);font-size:0.85em;">Vercel, 2026</em></div>
+        </div>
+      </div>
+      <ul class="bullets reveal">
+        <li>PMs, designers, marketers shipping working software via v0</li>
+        <li>Traditional developers now ship code in domains they've <strong>never worked in</strong>: MCP, auth, infra glue</li>
+        <li><em>"Vibe coding has redefined who can code — most vibe coders aren't developers at all."</em> — Vercel</li>
+      </ul>
+    </div>
+
+    <!-- OVERLAY: developer definition reframe -->
+    <style>
+      #slide-8[data-step="2"] .s8-q { text-decoration:line-through; text-decoration-color:#666; color:#555; transition:color 0.4s, text-decoration 0.4s; }
+    </style>
+    <div data-reveal="1" style="position:absolute;inset:0;background:rgba(5,5,5,0.98);z-index:10;display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.6s ease;">
+      <div style="text-align:center;max-width:min(85vw,900px);display:flex;flex-direction:column;gap:clamp(1rem,3vh,2.5rem);">
+        <p class="s8-q" style="font-family:var(--font-h);font-size:clamp(1.6rem,3.8vw,3.2rem);color:var(--text-dim);line-height:1.4;transition:color 0.4s;">AI would replace developers?</p>
+        <p data-reveal="2" style="font-family:var(--font-h);font-size:clamp(1.6rem,3.8vw,3.2rem);color:var(--text-dim);line-height:1.4;opacity:0;transition:opacity 0.5s ease;">The definition of <span style="color:var(--amber);">'developer'</span> expanded to anyone who can prompt.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 09 · BREADTH — MCP SECURITY ANGLE                    -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-9" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Force 2 — Breadth: Security</span>
+      <span class="slide-num">09 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal">When non-specialists ship code, <span class="accent">attack surface</span> grows.</h2>
+      <ul class="bullets reveal">
+        <li><strong>30 CVEs</strong> filed against MCP servers in 60 days (Jan–Feb 2026)</li>
+        <li><strong>~⅓</strong> of 2,614 surveyed MCP implementations susceptible to command injection</li>
+        <li>Named production Remote Code Execution bugs in <strong>LangFlow, LiteLLM, GPT Researcher, Flowise, Agent Zero</strong></li>
+      </ul>
+
+    </div>
+    <div class="slide-bottom reveal">
+      <span class="tag" style="color:var(--text-faint);font-size:0.55rem;">OX Security advisory Apr 2026 · dev.to MCP vulnerability tracker</span>
+    </div>
+
+    <!-- OVERLAY -->
+    <div data-reveal="1" style="position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.6s ease;">
+      <p style="font-family:var(--font-h);font-size:clamp(1.6rem,3.8vw,3.2rem);color:var(--text-dim);text-align:center;line-height:1.5;max-width:min(85vw,900px);">The gap between <span style="color:var(--amber);">"easy to ship"</span> and <span style="color:var(--amber);">"safe to ship"</span> is enormous.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10 · FORemote Code Execution 3 — LOST INTIMACY                         -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-10" data-steps="3" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Force 3 — Lost Intimacy</span>
+      <span class="slide-num">10 / 26</span>
+    </div>
+    <div class="slide-body" style="gap:var(--gap);">
+      <h2 class="slide-title reveal" >The hunch is gone.</h2>
+      <div class="reveal" style="flex:1;display:flex;align-items:stretch;min-height:0;overflow:hidden;width:100%;">
+        <div style="display:grid;grid-template-columns:1fr 2px 1fr;width:100%;height:100%;gap:0;">
+
+          <!-- LEFT PANEL: You wrote it -->
+          <div style="display:flex;flex-direction:column;gap:clamp(0.3rem,1vh,0.9rem);padding:clamp(0.5rem,1.2vw,1.2rem) clamp(0.8rem,2vw,2rem);">
+            <div style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--amber);font-weight:700;text-align:center;letter-spacing:0.08em;flex-shrink:0;">YOU WROTE IT</div>
+            <div style="background:rgba(200,72,48,0.15);border:1px solid rgba(200,72,48,0.5);border-radius:8px;padding:clamp(0.5rem,1.2vh,1.1rem) clamp(0.6rem,1.5vw,1.5rem);text-align:center;font-size:var(--t-body);color:#e87060;flex-shrink:0;">🚨 2:17 am — null ref in auth</div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;background:rgba(192,136,64,0.15);border:2px solid var(--amber);border-radius:10px;padding:clamp(0.5rem,1.5vh,1.5rem);text-align:center;">
+              <div style="font-size:var(--t-md);font-weight:700;color:var(--amber);">auth middleware</div>
+              <div style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-muted);margin-top:0.3em;">touched Tuesday</div>
+              <div style="font-size:var(--t-sm);color:var(--amber);font-style:italic;margin-top:0.3em;">"probably here"</div>
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(0.3rem,0.8vw,0.8rem);">
+              <div style="display:flex;flex-direction:column;justify-content:center;background:rgba(80,200,80,0.08);border:1px solid rgba(80,200,80,0.35);border-radius:10px;padding:clamp(0.4rem,1vh,1rem);text-align:center;">
+                <div style="font-size:var(--t-sm);font-weight:700;color:rgba(110,220,110,0.95);">token service</div>
+                <div style="font-family:var(--font-m);font-size:clamp(0.75rem,1.1vw,0.95rem);color:var(--text-faint);margin-top:0.2em;">wrote in March</div>
+              </div>
+              <div style="display:flex;flex-direction:column;justify-content:center;background:rgba(80,200,80,0.08);border:1px solid rgba(80,200,80,0.35);border-radius:10px;padding:clamp(0.4rem,1vh,1rem);text-align:center;">
+                <div style="font-size:var(--t-sm);font-weight:700;color:rgba(110,220,110,0.95);">user model</div>
+                <div style="font-family:var(--font-m);font-size:clamp(0.75rem,1.1vw,0.95rem);color:var(--text-faint);margin-top:0.2em;">Noa owns this</div>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;background:rgba(80,140,220,0.08);border:1px solid rgba(80,140,220,0.3);border-radius:10px;padding:clamp(0.4rem,1vh,1rem);text-align:center;">
+              <div style="font-size:var(--t-sm);font-weight:700;color:rgba(100,160,240,0.9);">db layer</div>
+              <div style="font-family:var(--font-m);font-size:clamp(0.75rem,1.1vw,0.95rem);color:var(--text-faint);margin-top:0.2em;">refactored Oct · PR#482</div>
+            </div>
+            <div style="background:rgba(80,180,80,0.12);border:1px solid rgba(80,180,80,0.45);border-radius:8px;padding:clamp(0.5rem,1.2vh,1.2rem);text-align:center;flex-shrink:0;">
+              <div style="font-size:var(--t-body);font-weight:700;color:rgba(120,220,120,1);">✓ fixed in 18 min</div>
+            </div>
+            <div style="text-align:center;font-size:var(--t-sm);color:var(--text-faint);flex-shrink:0;">you wrote or reviewed every line</div>
+          </div>
+
+          <!-- DIVIDER -->
+          <div style="background:rgba(255,255,255,0.12);"></div>
+
+          <!-- RIGHT PANEL: Agent wrote it -->
+          <div data-reveal="1" style="display:flex;flex-direction:column;gap:clamp(0.3rem,1vh,0.9rem);padding:clamp(0.5rem,1.2vw,1.2rem) clamp(0.8rem,2vw,2rem);opacity:0;transition:opacity 0.7s ease;">
+            <div style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-muted);font-weight:700;text-align:center;letter-spacing:0.08em;flex-shrink:0;">AGENT WROTE IT</div>
+            <div style="background:rgba(200,72,48,0.15);border:1px solid rgba(200,72,48,0.5);border-radius:8px;padding:clamp(0.5rem,1.2vh,1.1rem) clamp(0.6rem,1.5vw,1.5rem);text-align:center;font-size:var(--t-body);color:#e87060;flex-shrink:0;">🚨 2:17 am — null ref in auth</div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;opacity:0.65;background:rgba(255,255,255,0.04);border:2px dashed rgba(255,255,255,0.25);border-radius:10px;padding:clamp(0.5rem,1.5vh,1.5rem);text-align:center;position:relative;">
+              <div style="font-size:var(--t-md);font-weight:700;color:var(--text-muted);">auth middleware</div>
+              <div style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-faint);margin-top:0.3em;">generated Apr 3</div>
+              <div style="font-size:var(--t-sm);color:rgba(255,255,255,0.25);font-style:italic;margin-top:0.3em;">"no idea"</div>
+              <span style="position:absolute;top:0.5rem;right:0.9rem;font-size:1.6rem;color:rgba(255,255,255,0.3);">?</span>
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(0.3rem,0.8vw,0.8rem);opacity:0.6;">
+              <div style="display:flex;flex-direction:column;justify-content:center;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.2);border-radius:10px;padding:clamp(0.4rem,1vh,1rem);text-align:center;">
+                <div style="font-size:var(--t-sm);font-weight:700;color:var(--text-muted);">token service</div>
+                <div style="font-family:var(--font-m);font-size:clamp(0.75rem,1.1vw,0.95rem);color:var(--text-faint);margin-top:0.2em;">never read</div>
+              </div>
+              <div style="display:flex;flex-direction:column;justify-content:center;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.2);border-radius:10px;padding:clamp(0.4rem,1vh,1rem);text-align:center;">
+                <div style="font-size:var(--t-sm);font-weight:700;color:var(--text-muted);">user model</div>
+                <div style="font-family:var(--font-m);font-size:clamp(0.75rem,1.1vw,0.95rem);color:var(--text-faint);margin-top:0.2em;">never read</div>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;opacity:0.6;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.2);border-radius:10px;padding:clamp(0.4rem,1vh,1rem);text-align:center;">
+              <div style="font-size:var(--t-sm);font-weight:700;color:var(--text-muted);">db layer</div>
+              <div style="font-family:var(--font-m);font-size:clamp(0.75rem,1.1vw,0.95rem);color:var(--text-faint);margin-top:0.2em;">never read</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:clamp(0.5rem,1.2vh,1.2rem);text-align:center;flex-shrink:0;">
+              <div style="font-size:var(--t-body);font-weight:700;color:var(--text-muted);">⟳ starts from zero</div>
+            </div>
+            <div style="text-align:center;font-size:var(--t-sm);color:var(--text-faint);flex-shrink:0;">you've never read any of this</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Quote overlay: click 2 -->
+  <div data-reveal="2" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.8s ease;z-index:10;">
+    <div style="border-left:3px solid var(--amber);padding-left:clamp(1.2rem,3vw,2.5rem);max-width:min(80vw,860px);">
+      <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.6;font-style:italic;margin:0;">"When code breaks, you are not reconstructing intent. You are reverse-engineering a decision process that was never explained and no longer exists."</p>
+      <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-faint);margin-top:clamp(0.8rem,2vh,1.5rem);">— David Monnerat</p>
+    </div>
+  </div>
+
+  <div data-reveal="3" style="position:absolute;inset:0;background:rgba(5,5,5,0.97);display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.7s ease;z-index:11;">
+    <p style="font-family:var(--font-h);font-size:var(--t-xl);color:var(--text-dim);text-align:center;line-height:1.4;max-width:min(85vw,900px);">The codebase is accumulating decisions<br>that <span style="color:var(--amber);">nobody made.</span></p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12 · DON'T FIGHT IT — TRANSITION                     -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-12" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">The Pivot</span>
+      <span class="slide-num">12 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="font-size:var(--t-xl);max-width:100%;">You can fight bad outputs. You can't fight <span class="accent">the volume curve.</span></h2>
+      <ul class="bullets reveal" style="margin-top:var(--gap-lg);">
+        <li>Ranting about "AI slop" doesn't reduce slop — the volume ships either way</li>
+        <li>The choice: whether you have the <strong>operational muscle</strong> to run code you didn't write</li>
+      </ul>
+    </div>
+
+    <div data-reveal="1" style="position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.6s ease;">
+      <p style="font-family:var(--font-h);font-size:var(--t-xl);color:var(--text-dim);text-align:center;">Where do we go from here?</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13 · SECTION 3 — MANAGING WITHOUT READING            -->
+<!-- ============================================================ -->
+<section class="slide slide--section" id="slide-13" data-steps="2" data-step="0">
+  <div class="section-bg-num">3</div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">13 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" >Managing without reading.</h2>
+      <ul class="bullets large reveal">
+        <li>You've managed code you didn't write before — every tech lead has</li>
+        <li><em>Trust, but verify</em> → <strong>Trust, but make it prove it</strong></li>
+        <li>Your job: defining what good behaviour looks like, detecting deviation</li>
+      </ul>
+    </div>
+  </div>
+  <!-- OVERLAY: click 1 -->
+  <div data-reveal="1" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1.5rem,4vh,3.5rem);padding:var(--gap-lg);">
+    <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin:0;">Your job</p>
+    <div style="display:flex;flex-direction:column;gap:clamp(1.2rem,3vh,2.5rem);text-align:center;">
+      <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">1. Define what good behaviour looks like</p>
+      <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">2. Detect deviation</p>
+    </div>
+  </div>
+  <!-- OVERLAY: click 2 -->
+  <div data-reveal="2" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:11;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1.5rem,4vh,3.5rem);padding:var(--gap-lg);">
+    <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin:0;">What agents need</p>
+    <div style="display:flex;flex-direction:column;gap:clamp(1.2rem,3vh,2.5rem);text-align:center;">
+      <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">1. Goal</p>
+      <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">2. A way to verify their work</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 14 · THE VERBS CHANGE OBJECT — TABLE                  -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-14" data-steps="6" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">14 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">You've done this before. The verbs just <span class="accent">change object.</span></h2>
+      <table class="compare-table reveal">
+        <thead>
+          <tr><th>You did this (humans)</th><th>You'll do this (agents)</th></tr>
+        </thead>
+        <tbody>
+          <tr data-reveal="1" style="opacity:0;transition:opacity 0.4s ease;"><td>Hire engineer</td><td>Spin up agent</td></tr>
+          <tr data-reveal="2" style="opacity:0;transition:opacity 0.4s ease;"><td>Set expectations &amp; 1:1s</td><td>Define Goals, SLOs &amp; instrument</td></tr>
+          <tr data-reveal="3" style="opacity:0;transition:opacity 0.4s ease;"><td>Code reviews</td><td>Behavioural reviews via traces / metrics</td></tr>
+          <tr data-reveal="4" style="opacity:0;transition:opacity 0.4s ease;"><td>Performance evaluations</td><td>SLO compliance reports</td></tr>
+        </tbody>
+      </table>
+      <div data-reveal="5" style="opacity:0;transition:opacity 0.4s ease;text-align:center;margin-top:var(--gap-lg);">
+        <span style="font-family:var(--font-m);font-size:var(--t-md);color:var(--amber);letter-spacing:0.08em;text-transform:uppercase;">manage by outcome</span>
+      </div>
+    </div>
+  </div>
+  <!-- OVERLAY: click 6 -->
+  <div data-reveal="6" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1.5rem,4vh,3rem);padding:var(--gap-lg);text-align:center;">
+    <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">Stop reviewing <em style="color:var(--text-dim);font-style:italic;">code.</em></p>
+    <p style="font-size:var(--t-xl);font-weight:700;color:var(--amber);margin:0;">Start reviewing observable <em style="font-style:italic;">behavior.</em></p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15 · MAKE IT PROVE IT — WORKED EXAMPLE                -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-15" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">15 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">Scenario: agent ships a payment feature.</h2>
+      <div class="two-col reveal" style="grid-template-columns:1fr 1.8fr;">
+        <div class="panel panel--muted">
+          <p class="panel-label" style="font-size:var(--t-sm);">What the agent ships</p>
+          <div class="code-block" style="font-size:var(--t-body-lg);line-height:2;">
+            <span class="ok">✅</span> tests pass (47/47)<br>
+            <span class="ok">✅</span> no lint errors<br>
+            <span class="ok">✅</span> coverage 89%<br>
+            <span class="ok">✅</span> ready to merge
+          </div>
+        </div>
+        <div data-reveal="1" class="panel panel--vivid" style="opacity:0;transition:opacity 0.6s ease;">
+          <p class="panel-label" style="color:var(--amber);font-size:var(--t-sm);">What you demand instead</p>
+          <div class="code-block" style="font-size:var(--t-body-lg);line-height:2;color:#aaa;">
+            <span class="demand">→</span> Add metrics: <span class="demand">payment.retry.attempts</span>, <span class="demand">payment.retry.exhausted</span><br>
+            <span class="demand">→</span> Run synthetic failure in staging<br>
+            <span class="demand">→</span> Show me the trace + metric values<br>
+            <span class="demand">→</span> Verify dashboard in prod yourself
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16 · CAVEAT — A WORD ON CODE REVIEW                  -->
+<!-- ============================================================ -->
+<section class="slide-backup slide--content" id="slide-16" style="display:none">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">16 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal">A word on code review.</h2>
+      <ul class="bullets large reveal" style="margin-top:var(--gap-lg);">
+        <li><strong>First-pass author accountability:</strong> you wrote it with an agent — inspect it before it leaves your hands</li>
+        <li><strong>Production confidence:</strong> don't rely on code familiarity — rely on behaviour in production</li>
+        <li><strong>Reviewer role:</strong> inspect contracts and blast radius, not every line</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17 · DEFINING GOOD BEHAVIOUR — SLO EXAMPLE           -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-17">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">17 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">Scenario: auth endpoint.</h2>
+      <div class="code-block reveal" style="font-size:var(--t-body-lg);line-height:2;color:var(--text-dim);border:1px solid var(--amber-dim);background:var(--amber-faint);padding:clamp(1rem,2vh,2rem);">
+        <span class="good">p99 latency &lt; 300ms under expected load</span><br>
+        <span class="good">error rate &lt; 0.1%, no single type &gt; 50% of failures</span><br>
+        <span class="good">token refresh success rate &gt; 99.5%</span><br>
+        <span class="good">≤ 5 failed logins per IP/min before rate-limit kicks in</span><br>
+        <span class="good">100% of auth events emit structured log: user-id + outcome</span>
+      </div>
+      <p class="reveal" style="font-size:var(--t-body);color:var(--text-muted);margin-top:var(--gap);font-style:italic;">These rules aren't in the code. They're in the contract. Enforced via observability, not line-by-line review.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 18 · SECTION 4 — FIVE SHIFTS OVERVIEW                -->
+<!-- ============================================================ -->
+<section class="slide slide--section" id="slide-18" data-steps="1" data-step="0">
+  <div class="section-bg-num">4</div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">18 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">Four shifts.</h2>
+      <style>
+        #slide-18 .bullets li::before { display:none; }
+        #slide-18 .s18-ann { opacity:0; transition:opacity 0.5s ease; color:var(--amber); font-size:var(--t-body); font-style:italic; margin-left:clamp(0.75rem,2vw,1.5rem); }
+        #slide-18[data-step="1"] .s18-ann { opacity:1; }
+      </style>
+      <ol class="bullets large reveal" style="list-style:decimal inside;padding-left:0;">
+        <li>Observability-first deployment<span class="s18-ann">← the test</span></li>
+        <li>SLOs as the production contract</li>
+        <li>Policy-as-code guardrails<span class="s18-ann">← the assertions</span></li>
+        <li>AI-generated investigation reports</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19 · SHIFT 1 — OBSERVABILITY-FIRST                   -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-19" data-steps="2" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Shift 1 of 4</span>
+      <span class="slide-num">19 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal">Observability-first.</h2>
+      <ul class="bullets reveal" style="margin-top:var(--gap);">
+        <li>Instrument <strong>before you ship</strong> — it's the deploy gate, the unit-test of production</li>
+        <li><em>"Agent-observable code"</em> = structured logs, semantic metric labels, trace span attributes that explain <strong>intent</strong></li>
+      </ul>
+      <div data-reveal="1" style="opacity:0;transition:opacity 0.6s ease;margin-top:var(--gap-lg);flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2.5vw,2.5rem);">
+        <div class="panel panel--muted" style="display:flex;flex-direction:column;justify-content:center;">
+          <p class="panel-label" style="font-size:var(--t-sm);">Not intent</p>
+          <div class="code-block" style="font-size:var(--t-body-lg);color:#c84830;margin-top:var(--gap);">ERROR: failed</div>
+        </div>
+        <div class="panel panel--vivid" style="display:flex;flex-direction:column;justify-content:center;">
+          <p class="panel-label" style="color:var(--amber);font-size:var(--t-sm);">Intent</p>
+          <div class="code-block" style="color:#c0bbb4;font-size:var(--t-body);line-height:1.8;margin-top:var(--gap);">payment.retry.exhausted<br>user=42 reason=upstream_timeout<br>attempt=4 budget=3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Definition modal: click 2 -->
+  <div data-reveal="2" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.8s ease;z-index:10;">
+    <div style="border-left:3px solid var(--amber);padding-left:clamp(1.2rem,3vw,2.5rem);max-width:min(80vw,860px);">
+      <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.7;font-style:italic;margin:0;">Code is agent-observable if a person (or an agent) can reason about its behaviour without reading the source. That means structured logs with semantic event names, metrics with documented units and labels, traces with attributes that explain intent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20 · SHIFT 2 — SLOs AS THE CONTRACT                  -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-20" data-steps="2" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Shift 2 of 4</span>
+      <span class="slide-num">20 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="white-space:nowrap;">SLOs as the contract.</h2>
+      <ul class="bullets reveal" style="margin-top:var(--gap);">
+        <li>The SLO defines what <strong>"working"</strong> means — it's how the agent verifies its own work</li>
+        <li><strong>Pre-deploy:</strong> agent must prove the SLO holds under load — not "tests pass"</li>
+        <li><strong>Post-deploy:</strong> SLO compliance overrides every other signal, including the test suite</li>
+      </ul>
+    </div>
+    <div class="slide-bottom reveal">
+      <span class="tag" style="color:var(--text-faint);">"Production is where the rigor goes." — Charity Majors</span>
+    </div>
+  </div>
+  <!-- Message overlay: click 1 -->
+  <div data-reveal="1" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.8s ease;z-index:10;">
+    <div style="border-left:3px solid var(--amber);padding-left:clamp(1.2rem,3vw,2.5rem);max-width:min(80vw,860px);">
+      <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.7;margin:0;">SLOs turn your intent from the vibe of just <em>"Working"</em> to being a <strong style="color:var(--text);"> measurable contract</strong>.</p>
+    </div>
+  </div>
+  <!-- Message overlay: click 2 -->
+  <div data-reveal="2" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.8s ease;z-index:11;">
+    <div style="border-left:3px solid var(--amber);padding-left:clamp(1.2rem,3vw,2.5rem);max-width:min(80vw,860px);">
+      <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.7;margin:0;">As a manager you set OKRs for your employees.<br>As an <strong style="color:var(--amber);">agent manager</strong> you set SLOs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 21 · SHIFT 3 — POLICY-AS-CODE                        -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-21" data-steps="1" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Shift 3 of 4</span>
+      <span class="slide-num">21 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="white-space:nowrap;">Policy-as-code guardrails.</h2>
+      <ul class="bullets reveal" style="margin-top:var(--gap);">
+        <li>The deploy gate is <strong>code</strong> — version-controlled, enforced by CI</li>
+        <li><strong>Common gates:</strong> latency budget, error rate, dependency health, security scan, IaC compliance</li>
+        <li>Agent-written code passes through the <strong>same gate</strong> as human code — automatically</li>
+      </ul>
+      <p class="reveal" style="font-size:var(--t-sm);color:var(--text-faint);margin-top:var(--gap-lg);">Canonical tool: OPA (Open Policy Agent) — CNCF graduated, used at Netflix, Goldman Sachs, Google Cloud.</p>
+    </div>
+  </div>
+  <!-- OVERLAY: click 1 -->
+  <div data-reveal="1" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1rem,3vh,2rem);padding:var(--gap-lg);text-align:center;">
+    <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin:0;">What's next</p>
+    <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">Emerging Policy-as-Prompt<br>research and tools</p>
+    <p style="font-size:var(--t-body);color:var(--text-dim);margin:0;">Tooling exists — ecosystem is early</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 22 · SHIFT 4 — INVESTIGATION REPORTS                 -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-22" data-steps="3" data-step="0">
+  <style>
+    #slide-22 .s22-rhs { opacity:0; transition:opacity 0.5s ease; }
+    #slide-22[data-step="1"] .s22-rhs,
+    #slide-22[data-step="2"] .s22-rhs,
+    #slide-22[data-step="3"] .s22-rhs { opacity:1; }
+    #slide-22 .s22-lhs { transition:opacity 0.5s ease; }
+    #slide-22[data-step="1"] .s22-lhs,
+    #slide-22[data-step="2"] .s22-lhs,
+    #slide-22[data-step="3"] .s22-lhs { opacity:0.25; }
+  </style>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Shift 4 of 4</span>
+      <span class="slide-num">22 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">Start from the investigation report.</h2>
+      <div class="two-col reveal" style="flex:1;min-height:0;gap:clamp(1rem,2.5vw,2.5rem);">
+
+        <!-- OLD: tail logs -->
+        <div class="s22-lhs panel panel--muted" style="display:flex;flex-direction:column;gap:var(--gap);">
+          <p class="panel-label" style="font-size:var(--t-sm);color:#aaa;">Old: tail logs</p>
+          <div class="code-block" style="font-size:var(--t-body);line-height:1.8;flex:1;overflow:hidden;">
+            <span style="color:#7ec8a0;">$ tail -f /var/log/app.log | grep ERROR</span><br>
+            <span style="color:#c0c0c0;">[03:11:58] <span style="color:#e06c75;">ERROR</span> req_id=a4f2 status=500</span><br>
+            <span style="color:#c0c0c0;">[03:11:59] <span style="color:#e06c75;">ERROR</span> req_id=a4f3 status=500</span><br>
+            <span style="color:#c0c0c0;">[03:12:00] <span style="color:#e06c75;">ERROR</span> req_id=a4f4 status=500</span><br>
+            <span style="color:#c0c0c0;">[03:12:01] <span style="color:#e06c75;">ERROR</span> req_id=a4f5 status=500</span><br>
+            <span style="color:#c0c0c0;">[03:12:01] <span style="color:#e5c07b;">WARN</span>  db_query slow=true ms=4823</span><br>
+            <span style="color:#c0c0c0;">[03:12:02] <span style="color:#e06c75;">ERROR</span> req_id=a4f6 status=500</span><br>
+            <span style="color:#c0c0c0;">[03:12:02] <span style="color:#e06c75;">ERROR</span> req_id=a4f7 status=500</span><br>
+            <span style="color:#7ec8a0;">^C</span>
+          </div>
+          <p style="font-size:var(--t-sm);color:#888;font-style:italic;">You are the investigation engine.</p>
+        </div>
+
+        <!-- NEW: AI report -->
+        <div class="s22-rhs panel panel--vivid" style="display:flex;flex-direction:column;gap:var(--gap);">
+          <p class="panel-label" style="font-size:var(--t-sm);color:var(--amber);">New: AI investigation report</p>
+          <div class="code-block" style="font-size:var(--t-body);line-height:1.9;color:var(--text-dim);flex:1;overflow:hidden;">
+            <span style="color:var(--amber);">// AI Investigation Report — 03:12 UTC</span><br>
+            Latency spike at <span class="demand">02:47:03 UTC</span> → deploy <span class="demand">cart-service@7f3a91</span><br>
+            N+1 query in <span class="demand">OrderHistoryService.getRecentOrders()</span><br>
+            Fix: <span class="demand">prefetch_related('items')</span> line 47<br>
+            Confidence: <span style="color:#5a9a70;">HIGH</span> · [trace] [deploy] [git blame]
+          </div>
+          <p style="font-size:var(--t-sm);color:var(--text-muted);font-style:italic;">You evaluate the hypothesis.</p>
+        </div>
+
+      </div>
+      <ul class="bullets reveal" style="flex-shrink:0;margin-top:var(--gap);">
+        <li>Real today: PagerDuty SRE Agent (Oct 2025), incident.io (Jul 2025), Azure AI SRE (May 2025 preview)</li>
+      </ul>
+    </div>
+
+    <!-- OVERLAY: bullshit meter -->
+    <div data-reveal="2" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.6);z-index:10;display:flex;align-items:center;justify-content:flex-start;padding-left:clamp(2rem,8vw,8rem);">
+      <div style="display:flex;align-items:center;gap:clamp(1rem,2vw,2rem);">
+        <div style="display:flex;flex-direction:column;gap:0.5rem;text-align:right;">
+          <p style="font-size:var(--t-xl);font-weight:800;color:var(--amber);margin:0;line-height:1.2;">Use your AI<br>bullshit meter</p>
+        </div>
+        <span style="font-size:clamp(3rem,8vw,7rem);color:var(--amber);line-height:1;">⟶</span>
+      </div>
+    </div>
+    <!-- OVERLAY: blame checklist -->
+    <div data-reveal="3" style="position:absolute;inset:0;background:rgba(11,11,11,0.93);z-index:11;display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.5s ease;">
+      <div style="max-width:min(80vw,700px);text-align:left;">
+        <p style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-faint);margin-bottom:clamp(1rem,2.5vh,2rem);line-height:1.5;">If the report is wrong, ask three questions:</p>
+        <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:clamp(0.75rem,2vh,1.5rem);">
+          <li style="display:flex;gap:1rem;align-items:baseline;">
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;">1.</span>
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Is <em style="color:var(--amber);font-style:italic;">my</em> instrumentation right?</span>
+          </li>
+          <li style="display:flex;gap:1rem;align-items:baseline;">
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;">2.</span>
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Is <em style="color:var(--amber);font-style:italic;">my</em> analysis right?</span>
+          </li>
+          <li style="display:flex;gap:1rem;align-items:baseline;">
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;">3.</span>
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Did the agent have enough context?</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 23 · SHIFT 5 — THE NEW ON-CALL SKILL                 -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-23" data-steps="4" data-step="0">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Shift 5 of 4</span>
+      <span class="slide-num">23 / 26</span>
+    </div>
+    <style>
+      /* ✕ and annotations start hidden; strikethrough starts off */
+      #slide-23 .s23-x1, #slide-23 .s23-ann1,
+      #slide-23 .s23-x2, #slide-23 .s23-ann2,
+      #slide-23 .s23-x3, #slide-23 .s23-ann3 { opacity:0; transition:opacity 0.4s ease; }
+      /* Step 1+: reveal row 1 */
+      #slide-23:not([data-step="0"]) .s23-x1,
+      #slide-23:not([data-step="0"]) .s23-ann1 { opacity:1; }
+      #slide-23:not([data-step="0"]) .s23-r1 { text-decoration:line-through; text-decoration-color:#e8573a99; }
+      /* Step 2+: reveal row 2 */
+      #slide-23:not([data-step="0"]):not([data-step="1"]) .s23-x2,
+      #slide-23:not([data-step="0"]):not([data-step="1"]) .s23-ann2 { opacity:1; }
+      #slide-23:not([data-step="0"]):not([data-step="1"]) .s23-r2 { text-decoration:line-through; text-decoration-color:#e8573a99; }
+      /* Step 3+: reveal row 3 */
+      #slide-23[data-step="3"] .s23-x3, #slide-23[data-step="4"] .s23-x3,
+      #slide-23[data-step="3"] .s23-ann3, #slide-23[data-step="4"] .s23-ann3 { opacity:1; }
+      #slide-23[data-step="3"] .s23-r3, #slide-23[data-step="4"] .s23-r3 { text-decoration:line-through; text-decoration-color:#e8573a99; }
+    </style>
+    <div class="slide-body">
+      <h2 class="slide-title reveal">The new on-call skill.</h2>
+      <div class="two-col reveal" style="margin-top:var(--gap);">
+        <div class="panel panel--muted" style="display:flex;flex-direction:column;gap:clamp(0.75rem,2vh,1.5rem);">
+          <p class="panel-label">Old</p>
+          <div style="display:flex;flex-direction:column;gap:clamp(0.6rem,1.5vh,1.2rem);">
+            <!-- row 1: text always visible; ✕ + annotation appear on click 1 -->
+            <div style="display:flex;align-items:baseline;gap:clamp(0.4rem,1vw,0.8rem);flex-wrap:nowrap;">
+              <span class="s23-x1" style="font-size:var(--t-body-lg);font-weight:900;color:#e8573a;line-height:1;flex-shrink:0;">✕</span>
+              <span class="s23-r1" style="font-size:var(--t-body-lg);font-weight:700;color:var(--text-muted);white-space:nowrap;transition:text-decoration 0.3s;">Read the code.</span>
+              <span class="s23-ann1" style="font-size:var(--t-body);font-weight:600;color:#e8573acc;white-space:nowrap;">— Force 1: volume is exponential</span>
+            </div>
+            <!-- row 2: text always visible; ✕ + annotation appear on click 2 -->
+            <div style="display:flex;align-items:baseline;gap:clamp(0.4rem,1vw,0.8rem);flex-wrap:nowrap;">
+              <span class="s23-x2" style="font-size:var(--t-body-lg);font-weight:900;color:#e8573a;line-height:1;flex-shrink:0;">✕</span>
+              <span class="s23-r2" style="font-size:var(--t-body-lg);font-weight:700;color:var(--text-muted);white-space:nowrap;transition:text-decoration 0.3s;">Find the bug.</span>
+              <span class="s23-ann2" style="font-size:var(--t-body);font-weight:600;color:#e8573acc;white-space:nowrap;">— Force 2: breadth spans stacks you don't own</span>
+            </div>
+            <!-- row 3: text always visible; ✕ + annotation appear on click 3 -->
+            <div style="display:flex;align-items:baseline;gap:clamp(0.4rem,1vw,0.8rem);flex-wrap:nowrap;">
+              <span class="s23-x3" style="font-size:var(--t-body-lg);font-weight:900;color:#e8573a;line-height:1;flex-shrink:0;">✕</span>
+              <span class="s23-r3" style="font-size:var(--t-body-lg);font-weight:700;color:var(--text-muted);white-space:nowrap;transition:text-decoration 0.3s;">Know every service.</span>
+              <span class="s23-ann3" style="font-size:var(--t-body);font-weight:600;color:#e8573acc;white-space:nowrap;">— Force 3: lost intimacy, code you never wrote</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="reveal" style="font-size:var(--t-sm);color:var(--text-faint);margin-top:var(--gap-lg);">Operational metrics matter more, not less: MTTR, MTBF, SLO compliance, error budget burn rate.</p>
+    </div>
+  </div>
+  <!-- OVERLAY: click 4 — things to be good at -->
+  <div data-reveal="4" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1rem,3vh,2.5rem);padding:var(--gap-lg);">
+    <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin:0;text-align:center;">Things to be good at</p>
+    <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:clamp(0.6rem,1.8vh,1.4rem);max-width:min(85vw,900px);">
+      <li style="display:flex;gap:1rem;align-items:baseline;">
+        <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;flex-shrink:0;">1.</span>
+        <span style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Reading distributed traces</span>
+      </li>
+      <li style="display:flex;gap:1rem;align-items:baseline;">
+        <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;flex-shrink:0;">2.</span>
+        <span style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Recognising failure-mode patterns across stacks you didn't write</span>
+      </li>
+      <li style="display:flex;gap:1rem;align-items:baseline;">
+        <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;flex-shrink:0;">3.</span>
+        <span style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Validating AI hypotheses</span>
+      </li>
+      <li style="display:flex;gap:1rem;align-items:baseline;">
+        <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;flex-shrink:0;">4.</span>
+        <span style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Knowing when to escalate vs. when to trust the report</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 24 · SECTION 5 — CLOSE / REFRAME                     -->
+<!-- ============================================================ -->
+<section class="slide slide--section" id="slide-24">
+  <div class="section-bg-num">5</div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="slide-num">24 / 26</span>
+    </div>
+    <div class="slide-body" style="justify-content:center;text-align:center;">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">The reframe.</h2>
+
+      <!-- typographic equation -->
+      <div class="reveal" style="display:flex;flex-direction:column;align-items:center;gap:clamp(0.6rem,1.8vh,1.4rem);">
+        <p style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-faint);font-style:italic;line-height:1.3;">"You build it, you run it."</p>
+        <span style="font-size:clamp(1.4rem,3.5vw,2.8rem);color:var(--amber);line-height:1;">⇕</span>
+        <p style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);font-style:italic;line-height:1.3;">"You ship agents, you own their outcome."</p>
+      </div>
+
+      <p class="reveal" style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-faint);margin-top:clamp(1.5rem,4vh,3rem);letter-spacing:0.04em;">Accountability hasn't moved. The keystrokes have.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 25 · CALL TO ACTION — THREE QUESTIONS                 -->
+<!-- ============================================================ -->
+<section class="slide slide--content" id="slide-25">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Call to Action</span>
+      <span class="slide-num">25 / 26</span>
+    </div>
+    <div class="slide-body">
+      <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">Three questions before every agent-written deploy.</h2>
+      <ol class="questions-list reveal" style="list-style:none;display:flex;flex-direction:column;gap:var(--gap-lg);">
+        <li style="display:flex;gap:1.5rem;align-items:flex-start;">
+          <span style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);flex-shrink:0;padding-top:0.2em;">01</span>
+          <div>
+            <p style="font-size:var(--t-body-lg);font-weight:700;color:var(--text);">What does good behaviour look like?</p>
+            <p style="font-size:var(--t-sm);color:var(--text-muted);margin-top:0.3em;">Have you defined the SLOs?</p>
+          </div>
+        </li>
+        <li style="display:flex;gap:1.5rem;align-items:flex-start;">
+          <span style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);flex-shrink:0;padding-top:0.2em;">02</span>
+          <div>
+            <p style="font-size:var(--t-body-lg);font-weight:700;color:var(--text);">How will I know if it's misbehaving?</p>
+            <p style="font-size:var(--t-sm);color:var(--text-muted);margin-top:0.3em;">Is the instrumentation in place?</p>
+          </div>
+        </li>
+        <li style="display:flex;gap:1.5rem;align-items:flex-start;">
+          <span style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);flex-shrink:0;padding-top:0.2em;">03</span>
+          <div>
+            <p style="font-size:var(--t-body-lg);font-weight:700;color:var(--text);">Who bears the responsibility?</p>
+            <p style="font-size:var(--t-sm);color:var(--text-muted);margin-top:0.3em;">Is responsibility clear?</p>
+          </div>
+        </li>
+      </ol>
+      <p class="reveal" style="font-size:var(--t-sm);color:var(--amber);margin-top:var(--gap-lg);font-style:italic;">"If you can't answer those three, you're not ready to ship — regardless of who wrote the code."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 26 · CLOSING LINE                                     -->
+<!-- ============================================================ -->
+<section class="slide slide--closing" id="slide-26" data-steps="1" data-step="0">
+  <div class="orb orb-1" style="opacity:0.25;"></div>
+  <div class="orb orb-2" style="opacity:0.2;"></div>
+  <div class="slide-inner" style="justify-content:center;align-items:center;text-align:center;">
+    <div class="reveal">
+      <p style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:var(--gap-lg);">AWS X DevOps · 2026</p>
+      <p class="closing-line">
+        Your job isn't writing/reading code.
+        It's writing/reading <span class="accent">systems.</span>
+      </p>
+    </div>
+    <div class="reveal" style="margin-top:var(--gap-lg);">
+      <p style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--text-faint);letter-spacing:0.1em;">Ran Tavory · @rantav</p>
+    </div>
+    <div data-reveal="1" style="opacity:0;margin-top:clamp(2rem,5vh,4rem);transition:opacity 0.7s ease;">
+      <p style="font-family:var(--font-h);font-size:var(--t-xl);color:var(--amber);letter-spacing:0.05em;">Thank you.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+/* === SPEAKER NOTES === */
+const NOTES = {
+  0: `<p><strong>Cold open — no charts yet.</strong> This slide lives on screen while you walk out. The P0 badge sets the tone before you say a word.</p>
+<p>The talk starts with the thesis, not data. Let the audience read it. Then: <em>"Let me tell you how I ended up here."</em></p>`,
+
+  1: `<p>I want to start with a personal story.</p>`,
+
+  2: `<ul>
+<li>About 5 years ago the world got to know GitHub's co-pilot. It was a sophisticated auto-complete, not always correct, not always top-notch, but still very useful and usage caught on fire. After using it for the first time I never looked back.</li>
+<li>Years later came Cursor and Windsurf and Aider which was my personal favorite for a while.</li>
+<li>Models were getting smarter and smarter and their harness improved significantly.</li>
+<li>Cursor was a game changer for many. It is still quite good.</li>
+<li>But to me Claude Code was the second Aha moment. That's when I realized that I need to stop micro-managing and start setting Goals.</li>
+<li>This story is not about the tools, it is about the scope of work.
+  <ul>
+    <li>Copilot could implement functions given their description, about the equivalent of 1–2 minutes worth of work in each completion.</li>
+    <li>Aider could implement classes or modules, the equivalent of 15–30 minutes.</li>
+    <li>Claude Code (and Codex and today's Cursor) can implement entire features, the equivalent of hours and even days of human work.</li>
+  </ul>
+</li>
+<li>My personal story turns out to match the scientifically measured history.</li>
+</ul>
+<p><strong>Close:</strong> Hold the moment. <em>"That's my story. Let me show you the curve underneath it."</em> → straight into the AI Digest chart.</p>`,
+
+  3: `<ul>
+<li><strong>Frame METR carefully:</strong> Task-completion time horizons have grown exponentially since 2019, with no sign of slowing. As of early 2026, frontier models reliably handle tasks that take a human expert several hours. Extrapolating the curve, multi-day tasks are plausibly within reach by 2027.</li>
+<li><em>"A new Moore's Law for AI agents"</em></li>
+<li>As a matter of fact, recent reports show that agents are able to complete multi-year projects such as an Operating System, in one go!</li>
+<li>Task completion time horizon: The estimated median time it takes human developers to complete a task.</li>
+</ul>
+<p>Let the numbers sit. Don't rush. Then pause and ask: <em>"Show of hands: how many of you have merged a PR this month that included code an agent wrote and you didn't read line by line?"</em> → next slide.</p>`,
+
+  4: `<ul>
+<li><em>"You build it, you run it"</em> — Vogels' 2006 framing for Amazon engineering ownership. The principle: the people closest to the code own its production behaviour.
+  <ul>
+    <li><strong>Ownership and quality</strong> — developers who must support their code in prod are incentivised to write robust, maintainable systems.</li>
+    <li><strong>Reduced friction</strong> — eliminates the "throw it over the wall" handoff to ops; accelerates troubleshooting.</li>
+    <li><strong>The on-call reality</strong> — devs share on-call duties and use operational feedback to improve code. "Code yourself into a good night's sleep."</li>
+    <li><strong>Cultural shift</strong> — operational excellence, automation, full-stack ownership.</li>
+  </ul>
+</li>
+<li><em>"You didn't build it. Your agent built it. So who the 🤬 runs it?"</em> — the title of the talk, deployed as the rhetorical hinge. Let the room sit with it for a beat. The discomfort is the point — every assumption underneath "you build it, you run it" is about to be tested.</li>
+</ul>
+<p><strong>Close:</strong> Three forces are making the "who runs it" question structurally harder. That's Section 2.</p>`,
+
+  5: `<p><strong>Open:</strong> Before I go through each of these, let me give you the map. Three forces — each independent, each accelerating, and all three landing on the same person: you.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"Force 1 — Volume"</em> — the amount of code shipping per engineer per week has changed shape. Exponentially. The METR curve applies here too.</li>
+<li><em>"Force 2 — Breadth"</em> — it's not just more code in your stack. It's code in stacks you've never touched. Frontend from a backend engineer. Auth from Mobile engineers, infra from anybody.</li>
+<li><em>"Force 3 — Lost intimacy"</em> — this one's personal. It's the hunch you used to have at 2 AM that told you where to look first. That hunch is trained by writing code. When you didn't write it, the hunch isn't there.</li>
+</ul>
+<p><strong>Close:</strong> Let's go through each one. They compound — by the end, you'll see why all three together change the job.</p>`,
+
+  6: `<p><strong>Open:</strong> Force 1 is the simplest of the three forces and the easiest to measure — pure volume.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"1 billion commits on GitHub in 2025, 25% YoY growth"</em> — primary source, Octoverse 2025. This is raw platform activity, before you even ask what's AI-authored. The point: even ignoring AI, the developer surface area has stepped up a level.</li>
+<li><em>"AI-authored code: 26.9% of production code (early 2026)"</em> — empirical, n=4.2M developers, measured Nov 2025–Feb 2026. Up from 22% the prior quarter. That's a 22% quarter-over-quarter jump in AI's <em>share</em>. Source: ShiftMag (secondary) — shiftmag.dev/this-cto-says-93-of-developers-use-ai-but-productivity-is-still-10-8013/</li>
+<li><em>"Honest range: 27–42% depending on whether you count 'generated' or 'assisted'"</em> — Many cited stats conflate generated and assisted; the defensible range is wide.</li>
+</ul>
+<p><strong>Push back:</strong> Amodei's "90% of code written by AI" claim is widely contested and the methodology is opaque. Use it as a <em>temperature reading</em>, not a fact. The point isn't whether the number is true — it's that the CEO of the company building the AI was willing to say it publicly. That's where the industry thinks this is going.</p>
+<p><strong>Close:</strong> Volume is force one. And the same engineers shipping all this code are now shipping it in domains they've never touched — that's force two.</p>`,
+
+  7: `<p><strong>Open:</strong> Force 1 was <em>more code</em>. Force 2 is <em>broader code</em> — code in stacks and domains you've never worked in. The volume curve and the breadth curve are independent and both are climbing.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"63% of vibe coders are non-developers"</em> — Vercel's own data on who's using v0 and similar tools. PMs, designers, marketers shipping working software. Catchphrase: <em>"Remember when people said AI would replace developers? In reality, the definition of 'developer' expanded — to anyone who can prompt."</em> Don't moralize about whether they should be shipping; they are shipping. That's the operational reality you inherit.</li>
+<li><em>"Even traditional developers now ship code in domains they've never worked in: UI, MCP, infra, auth"</em> — make it personal: <em>"I've never written an MCP server. My agent wrote three this month."</em> Concrete, recent, the audience knows MCP is hot. The point lands harder if you name a domain you personally don't deeply know.</li>
+</ul>
+<p><strong>Push back:</strong> Some in the audience will object — "non-developers shipping code is just a quality disaster waiting to happen." Concede the point and pivot: that's exactly why operating it well matters. The disaster is here either way; the question is whether you're set up to catch it.</p>
+<p><strong>Close:</strong> Volume + breadth means more code in more places. Force 3 is the part that hurts personally — you've lost intimacy with all of it.</p>`,
+
+  8: `<p><strong>Open:</strong> Quick concrete example of <em>breadth</em> — a hot, recent domain where the gap between "easy to ship" and "safe to ship" is enormous.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"30 CVEs filed against MCP servers in 60 days (Jan–Feb 2026)"</em> — peer-reviewed CVE filings, not vendor marketing. Sixty days is the relevant unit; this is a pace of disclosure.</li>
+<li><em>"~⅓ of 2,614 surveyed MCP implementations susceptible to command injection"</em> — use the rough fraction, not a sharp percentage — the underlying methodology is a personal-blog tracker, not a peer-reviewed paper.</li>
+<li><em>"Production MCP servers in LangFlow, LiteLLM, GPT Researcher, Flowise, Agent Zero shipped command-injection / Remote Code Execution bugs in 2026"</em> — bulletproof, from OX Security's named-product advisory. Drop the names of the products you recognize.</li>
+</ul>
+<p><strong>Push back:</strong> Don't dwell. This is a single beat to make the breadth-of-exposure point concrete, then move on.</p>
+<p><strong>Close:</strong> Volume, breadth — and we still haven't talked about the part that hurts personally. That's Force 3.</p>`,
+
+  9: `<p><strong>[Slide in — left panel only]</strong> <em>"That hunch — 'the bug is probably in the auth middleware I touched Tuesday' — doesn't exist for code you never wrote."</em> Debugging isn't reading code, it's reverse-engineering <em>why</em> a piece of code looked the way it did. You can only do that if you know the decisions that produced it.</p>
+<p><strong>61%:</strong> Duma et al., EASE '26, n=33,596 AI PRs vs 5,574 human PRs, peer-reviewed. <em>"In two years your job won't be reading code. The data says it already isn't — 61% of agent-authored PRs aren't getting read today."</em></p>
+<p><strong>[Click 1 — right panel appears]</strong> Walk through the contrast. Same alert, same codebase — but on the right, you've never read a single node. No hunch. Starts from zero.</p>
+<p><strong>[Click 2 — Monnerat quote overlay]</strong> Let it sit. Don't read it aloud immediately — give the room a beat to take it in. Then: <em>"The codebase is accumulating decisions that nobody made."</em></p>
+`,
+
+
+  10: `<p><strong>Open:</strong> This is the breath beat. The audience just absorbed three forces' worth of bad news. Before the solution half lands, they need permission to stop fighting.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"You can fight bad outputs. You can't fight the volume curve."</em> — This is the distinction that defuses the room. You're not asking engineers to lower their standards; you're asking them to pick the right target. Every engineer in the room got good by writing code carefully; the instinct to resist sloppy code is <em>correct as a craft value</em>. Apply it where it lands — at runtime, not at review time when the volume makes review futile.</li>
+<li><em>"Ranting about 'AI slop' doesn't reduce slop. The volume ships either way."</em> — The volume curve is exogenous to your opinions about it. Refusing to engage just removes you from the conversation where it matters.</li>
+<li><em>"The choice isn't whether agents ship code. It's whether you have the operational muscle to run code you didn't write."</em> — Direct pivot into Section 3. The skill exists; you've used it before; you just have to apply it one level of abstraction higher.</li>
+</ul>
+<p><strong>Push back:</strong> Some in the room will hear "accept it" as "give up on quality." Make the distinction explicit: <em>acceptance of the volume curve</em> is not <em>acceptance of bad code</em>. You stop fighting the curve so you can start fighting bad behaviour in production — where it actually matters.</p>
+<p><strong>Close:</strong> <em>"So if we can't refuse it, and we can't review every line of it, what's left? The answer is the same answer every senior engineer has used to scale beyond their own keystrokes — and it's the topic of the next section."</em></p>`,
+
+  11: `<p><strong>Open:</strong> <em>"Have you ever managed a team? Led a group of engineers? Been a tech lead? Then you already know how to do this — you just have to apply it one level of abstraction higher."</em> This is the central reframe of the talk.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"OK, so what do we do now, how to get ourselves out of that mess?"</em> — Explicit acknowledgement that you're pivoting from problem to solution. Don't be shy about naming the structure of the talk.</li>
+<li><em>"You've managed code you didn't write before — every tech lead has"</em> — Managing humans or agents when you don't know all the details means defining intent clearly and evaluating outputs, not processes.</li>
+<li><em>"Hold agents accountable for outcomes, not implementation"</em> — The identity shift: from <em>"person who knows every service"</em> to <em>"person who defines what good behaviour looks like and detects deviation."</em></li>
+<li><em>"Trust, but verify → Trust, but make it prove it"</em> — Sharpens the cliché. Verification is no longer reading the code; it's demanding evidence. This sets up the worked examples that follow.</li>
+<li><em>"Your job: defining what good behaviour looks like, detecting deviation"</em> — The one-line job description for the next decade of SRE.</li>
+<li><em>"Agents need: 1. Goal  2. A way to verify their work"</em> — The two prerequisites. The rest of Section 3 and all of Section 4 is just ways of providing these two things at scale.</li>
+</ul>
+<p><strong>Push back:</strong> The "you've done this before" framing risks sounding glib. Acknowledge: managing humans is harder in some ways (they have ego, careers, fear) and easier in others (you can ask them what they were thinking). Agents flip both — no ego, but no introspection. The skill transfers; the specifics don't.</p>
+<p><strong>Close:</strong> You've already done all of this — let me show you exactly how the verbs translate.</p>`,
+
+  12: `<p><strong>Open:</strong> <em>"You've done all of this before. The verbs just change object."</em> Then let the audience read the table for a beat before walking it.</p>
+<p><strong>Per row:</strong></p>
+<ul>
+<li><em>"Hire engineer → Spin up agent"</em> — both start with provisioning a new entity that will act on the system. You already know how to onboard one; now do it faster, more often, and to a thing that doesn't have a calendar.</li>
+<li><em>"Set expectations &amp; 1:1s → Define Goals, SLOs &amp; instrument"</em> — The conversation that used to happen verbally is now codified. The SLO is the 1:1 with the agent. The instrumentation is how you have the conversation continuously.</li>
+<li><em>"Code reviews → Behavioural reviews via traces/metrics"</em> — You stop reviewing the line of code and start reviewing the observable behaviour it produces. This is the core craft shift.</li>
+<li><em>"Performance evaluations → SLO compliance reports"</em> — Same cadence, same purpose: is this contributor meeting expectations? Now the report writes itself from observability data.</li>
+</ul>
+<p><strong>Push back:</strong> The mapping isn't perfect — humans have ego and growth trajectories; agents don't. Don't oversell the analogy. The point is: the skill of <em>managing-by-outcome</em> transfers. The specifics differ.</p>
+<p><strong>Close:</strong> Two worked examples next. First — <em>make it prove it.</em></p>`,
+
+  13: `<p><strong>Open:</strong> This is the agentic version of "trust, but verify" — except the burden of proof shifts onto the agent.</p>
+<p>Walk both panels. Left: what you're trained to accept. Right: what you should demand. The contrast is the whole lesson.</p>
+<p>Your experience is what tells you what evidence to demand. That's the skill that scales.</p>`,
+
+
+  14: `<p><strong>Open:</strong> This is the concrete version of what defining good behaviour looks like.</p>
+<p>Key point: these rules aren't in the code. They're in the contract. You're enforcing them via observability, not review.</p>
+<p>Before the agent writes a line — this is the specification. The agent's job is to satisfy it. Your job is to verify it does.</p>`,
+
+  15: `<p>The toolkit for "managing without reading" exists. You now have to automate it, make it robust, and tune it to an agent.</p>
+<ul>
+<li><strong>Observability-first deployment</strong> — instrumentation is required; the basic "unit test for production." Instrument before you ship, have the agent prove it's working.</li>
+<li><strong>SLOs as the production contract</strong> — the non-functional requirements. Observable behaviour, not code review, is the contract.</li>
+<li><strong>Policy-as-code guardrails</strong> — the "assert" in the unit test. Deployment gates that don't require code familiarity.</li>
+<li><strong>AI-generated investigation reports</strong> — when things go off the rails, start from the report; drill into logs only when it doesn't pass your sniff test.</li>
+</ul>
+<p>Four shifts. They compound. Walk the list — each one is a slide that follows.</p>`,
+
+  16: `<p><strong>Open:</strong> It's the precondition for everything else.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"Instrument before you ship"</em> — observability is no longer something you add when there's a problem. It's the deploy gate, the unit-test of production. If the code doesn't emit signals you can reason about in production, it isn't done.</li>
+<li><em>"Agent-observable code = structured logs, semantic metric labels, trace span attributes that explain intent"</em> — Code is agent-observable if a person (or an agent) can reason about its behaviour without reading the source. The key word is <em>intent</em>. <code>ERROR: failed</code> is not intent. <code>payment.retry.exhausted user=42 reason=upstream_timeout attempt=4 budget=3</code> is intent.</li>
+</ul>
+<p>Personal story: a professor of mine used to say — logs should tell a story, from start to end, well understood and self-explanatory, no code reading required to follow the flow. That standard, which used to be a craft preference, is now the operational baseline.</p>
+<p><strong>Push back:</strong> Instrumentation has a cost — schema design, label cardinality, storage. The cost is real. The point isn't <em>more</em> signals; it's the <em>right</em> signals. A handful of well-named structured events beats a flood of <code>info "starting"</code> log lines.</p>
+<p><strong>Close:</strong> The system can now be reasoned about from outside. What's the contract for whether it's <em>working</em>? That's Shift 2 — SLOs.</p>`,
+
+  17: `<p><strong>Open:</strong> Shift 1 made the system legible. Shift 2 makes "is it working?" measurable. The SLO is the contract.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"The SLO defines what 'working' means — it's how the agent verifies its own work"</em> — tie back to Section 3: agents need a goal and a way to verify their work. The SLO is both. "Working" stops being a vibe and starts being a measurable contract.</li>
+<li><em>"Pre-deploy: the agent must prove the SLO holds under load — not 'tests pass'"</em> — concrete example: auth endpoint, SLO is p99 &lt; 300ms at 1,000 RPS, error rate &lt; 0.1%. Agent spins up the change in staging, runs a load test at the SLO's traffic target, captures the latency histogram and error rate, shows you the graph. <strong>Tests prove correctness on toy inputs; load tests prove SLO compliance on real-shaped load.</strong></li>
+<li><em>"Post-deploy: SLO compliance in production overrides every other signal, including the test suite"</em> — a green test suite and a burning production system are routinely the same system. When an incident hits, the answer isn't "the tests are still green." It's "the SLO has been breached / not breached."</li>
+<li><em>"As a manager you set OKRs for your employees. As an agent manager you set SLOs for their product"</em> — You don't review every email your reports send — you review whether they hit their OKRs. Same logic, one level of abstraction higher.</li>
+</ul>
+<p><strong>Push back:</strong> Voice this on stage — credibility move. SLOs are <em>necessary but not sufficient</em>. They tell you when something is wrong in production, but they don't catch problems before deploy. Honest framing: <em>"SLO + automated quality gates = the new code review."</em> Not "SLO replaces code review."</p>
+<p><strong>Close:</strong> SLOs are the contract. But who enforces the contract at deploy time, when the agent's the one shipping? Shift 3 — policy-as-code.</p>`,
+
+  18: `<p><strong>Open:</strong> SLO sets the contract; policy-as-code enforces it at the gate. The agent ships through the same gate as a human — neither party gets to bypass it.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"Policy-as-code: the deploy gate is code, version-controlled, enforced by CI"</em> — The point isn't a specific tool. It's that the gate is code, version-controlled, code-reviewed itself, and not negotiable in the moment. The canonical tool is <strong>OPA (Open Policy Agent)</strong> with <strong>Rego</strong> — a CNCF graduated project used at Netflix, Goldman Sachs, Google Cloud. Adjacent: Conftest, Checkov, Spacelift. The point of the slide is the pattern, not the product.</li>
+<li><em>"Common gates: latency budget, error rate, dependency health, security scan, IaC compliance"</em> — SLO budget burn rate before deploy, error-rate ceiling, dependency vetting (no abandoned or vulnerable packages), security scan (no secrets, no known CVEs), Terraform/Pulumi compliance. Each one is a binary at the gate.</li>
+</ul>
+<p><strong>Push back:</strong> Two honest caveats. (1) Writing good policy is a real skill — the failure mode is policies that block legitimate work or silently pass everything. Maintain them like code, with tests. (2) Emerging "Policy-as-Prompt" work — tooling exists (NeMo Guardrails, Guardrails AI) but ecosystem is early.</p>
+<p><strong>Close:</strong> Deploy gate enforces the contract pre-prod. But what about production itself, when something does go wrong at 2 AM? That's Shift 4.</p>`,
+
+  19: `<p><strong>Open:</strong> Shifts 1–3 are about the system before the incident. Shift 4 is the moment everyone in this room cares about: the page fires at 3 AM — what happens next?</p>
+<p><strong>Stage order:</strong></p>
+<ol>
+<li><strong>Old world — tail logs.</strong> <em>"3 AM, alert fires: checkout p99 latency > 2s. Old world: SSH in, tail logs, grep for the deploy, look at the diff, find the bad query."</em> Let that land — it's what everyone in this room has done.</li>
+<li><strong>New world — start from the report.</strong> <em>"New world: open the investigation report."</em> Walk it line by line: "Latency increase began at 02:47:03 UTC, correlating with deploy of cart-service@7f3a91." → "Trace analysis identifies a new N+1 query in OrderHistoryService." → "Recommended fix: add prefetch_related('items'). Confidence: high." <em>"Your job is to evaluate that report — not write it from scratch."</em></li>
+<li><strong>This is not imaginary.</strong> PagerDuty SRE Agent shipped October 2025. incident.io AI SRE shipped July 2025. Azure SRE Agent at Build May 2025. Rootly AI SRE through 2025. Production tools, in use now.</li>
+<li><strong>The report can be wrong. Your job is to critique the reasoning.</strong> <em>"The slick formatting can make a wrong answer look credible. That's your new on-call skill."</em> When the report is wrong, before you blame the agent, ask three things: Is my instrumentation right? Is my analysis right? Did the agent have enough context? Usually the failure is upstream of the agent.</li>
+</ol>
+<p><strong>Push back:</strong> Vendor numbers (incident.io's 80% root-cause precision, Rootly's 70% MTTR reduction) are self-reported — say so. Confidence scores are noisy — treat them as input, not verdict.</p>`,
+
+  20: `<p><strong>Open:</strong> Final shift. We've talked about the system; this one is about <em>you</em> — what gets harder, what gets easier, what to be good at.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"Old: read the code, find the bug"</em> — the on-call skill that defined the last 20 years of SRE. Effective, but it required intimacy with the codebase — exactly what Force 3 said we're losing.</li>
+<li><em>"New: read the behaviour, validate the hypothesis"</em> — You're no longer expected to know the code; you're expected to know the <em>system</em>. The system tells its own story through traces, metrics, structured logs — if Shift 1 was done right.</li>
+<li><em>"Skill that matters: pattern matching across services you've never touched"</em> — concrete things to be good at: reading distributed traces fluently, recognising failure-mode patterns across stacks you didn't write, validating AI hypotheses, knowing when to escalate vs. when to trust the report. Operational metrics — <strong>MTTR, MTBF, SLA/SLO compliance, error budget burn rate</strong> — matter more, not less.</li>
+</ul>
+<p><strong>Push back:</strong> Be honest about what's lost. Deep code intimacy was <em>fun</em>; it made you feel competent in a tangible way. The new skill is more abstract, less satisfying, and harder to teach juniors. Don't pretend the transition is costless. But it's the only skill that scales to the volumes of today.</p>
+<p><strong>Close:</strong> Five shifts. They compound. Section 5 — the close — reframes the whole job in one line.</p>`,
+
+  21: `<p><strong>Open:</strong> No transition needed. Let the reframe land.</p>
+<p>"You build it, you run it" was about accountability, not keystrokes. The accountability hasn't moved. The keystrokes have.</p>
+<p>Your job didn't disappear. It got harder, more interesting, and more leveraged.</p>`,
+
+  22: `<p><strong>Open:</strong> Three questions. One per deploy. No exceptions.</p>
+<p>Let the audience write these down if they're going to write anything. These are the only three things you need to walk out with.</p>
+<p><strong>Per bullet:</strong></p>
+<ul>
+<li><em>"What does good behaviour look like?"</em> — Have you defined the SLOs? If not, you have no finish line.</li>
+<li><em>"How will I know if it's misbehaving?"</em> — Is the instrumentation in place? If not, you're flying blind.</li>
+<li><em>"Who bears the responsibility?"</em> — Think of it like an autonomous car. Are you, as the passive driver sitting behind the wheel, responsible for its behaviour? In today's software: yes, you are. Someone's name has to be on the SLO. Someone gets paged. Someone owns the postmortem. That has to be decided before the deploy, not after the incident.</li>
+</ul>
+<p><em>"If you can't answer those three, you're not ready to ship — regardless of who wrote the code."</em></p>`,
+
+  23: `<p><strong>Final slide.</strong> Let it sit. Don't rush the outro.</p>
+<p><em>"Your job isn't writing/reading code. It's writing/reading systems."</em></p>
+<p>Then: thank you. No summary. No recap. The closing line is the summary.</p>`
+};
+
+/* === PRESENTATION CONTROLLER === */
+class SlidePresentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.notesOpen = false;
+
+    this.progressBar = document.getElementById('progressBar');
+    this.navDots = document.getElementById('navDots');
+    this.notesPanel = document.getElementById('notesPanel');
+    this.notesBody = document.getElementById('notesBody');
+    this.notesLabel = document.getElementById('notesSlideLabel');
+
+    this.buildNavDots();
+    this.setupObserver();
+    this.setupKeyboard();
+    this.setupTouch();
+    this.setupWheel();
+    this.updateProgress(0);
+    this.handleInitialHash();
+  }
+
+  buildNavDots() {
+    this.slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      btn.addEventListener('click', () => this.goTo(i));
+      this.navDots.appendChild(btn);
+    });
+  }
+
+  setupObserver() {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          const idx = this.slides.indexOf(e.target);
+          this.current = idx;
+          this.updateProgress(idx);
+          this.updateDots(idx);
+          if (this.notesOpen) this.showNotes(idx);
+          history.replaceState(null, '', '#' + e.target.id);
+        }
+      });
+    }, { threshold: 0.5 });
+    this.slides.forEach(s => obs.observe(s));
+  }
+
+  handleInitialHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const target = document.getElementById(hash);
+    if (target && this.slides.includes(target)) {
+      // Defer until after first paint so scroll-snap is ready
+      requestAnimationFrame(() => target.scrollIntoView());
+    }
+  }
+
+  updateProgress(idx) {
+    const pct = this.total > 1 ? (idx / (this.total - 1)) * 100 : 100;
+    this.progressBar.style.width = pct + '%';
+  }
+
+  updateDots(idx) {
+    this.navDots.querySelectorAll('.nav-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+    });
+  }
+
+  goTo(idx) {
+    idx = Math.max(0, Math.min(this.total - 1, idx));
+    this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  advanceStep() {
+    const slide = this.slides[this.current];
+    const maxSteps = parseInt(slide.dataset.steps || 0);
+    if (!maxSteps) return false;
+    const step = parseInt(slide.dataset.step || 0);
+    if (step >= maxSteps) return false;
+    const newStep = step + 1;
+    slide.dataset.step = newStep;
+    const item = slide.querySelector(`[data-reveal="${newStep}"]`);
+    if (item) {
+      item.classList.add('revealed');
+    }
+    return true;
+  }
+
+  retreatStep() {
+    const slide = this.slides[this.current];
+    const maxSteps = parseInt(slide.dataset.steps || 0);
+    if (!maxSteps) return false;
+    const step = parseInt(slide.dataset.step || 0);
+    if (step <= 0) return false;
+    const item = slide.querySelector(`[data-reveal="${step}"]`);
+    if (item) item.classList.remove('revealed');
+    slide.dataset.step = step - 1;
+    return true;
+  }
+
+  setupKeyboard() {
+    document.addEventListener('keydown', e => {
+      if (e.target.getAttribute('contenteditable')) return;
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown':
+          e.preventDefault(); if (!this.advanceStep()) this.goTo(this.current + 1); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+          e.preventDefault(); if (!this.retreatStep()) this.goTo(this.current - 1); break;
+        case 'Home': e.preventDefault(); this.goTo(0); break;
+        case 'End':  e.preventDefault(); this.goTo(this.total - 1); break;
+        case 's': case 'S': case 'n': case 'N': this.toggleNotes(); break;
+        case 'Escape': if (this.notesOpen) this.toggleNotes(); break;
+      }
+    });
+  }
+
+  setupTouch() {
+    let startY = 0, startX = 0;
+    document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; startX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dy = startY - e.changedTouches[0].clientY;
+      const dx = startX - e.changedTouches[0].clientX;
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 40) {
+        this.goTo(this.current + (dy > 0 ? 1 : -1));
+      }
+    });
+  }
+
+  setupWheel() {
+    let last = 0;
+    document.addEventListener('wheel', e => {
+      const now = Date.now();
+      if (now - last < 800) return;
+      last = now;
+      if (e.deltaY > 0) { if (!this.advanceStep()) this.goTo(this.current + 1); }
+      else { if (!this.retreatStep()) this.goTo(this.current - 1); }
+    }, { passive: true });
+  }
+
+  toggleNotes() {
+    this.notesOpen = !this.notesOpen;
+    this.notesPanel.classList.toggle('open', this.notesOpen);
+    if (this.notesOpen) this.showNotes(this.current);
+  }
+
+  showNotes(idx) {
+    this.notesLabel.textContent = `Slide ${idx + 1} / ${this.total}`;
+    this.notesBody.innerHTML = NOTES[idx] || '<p style="color:#444;">No notes for this slide.</p>';
+  }
+}
+
+new SlidePresentation();
+
+/* === FIT HERO TITLE TO FULL WIDTH === */
+function fitHeroTitle() {
+  const hero = document.getElementById('titleHero');
+  if (!hero) return;
+  const lines = hero.querySelectorAll('.hero-line');
+  const containerWidth = hero.offsetWidth;
+  const containerHeight = hero.closest('.slide-body').offsetHeight;
+  if (!containerWidth || !containerHeight) return;
+
+  // Measure every line at 100px baseline, find the one that needs
+  // the smallest scale-up to fill width (i.e. the widest line)
+  let widthFontSize = Infinity;
+  lines.forEach(line => {
+    line.style.cssText = 'display:inline-block; white-space:nowrap; font-size:100px';
+    const textWidth = line.getBoundingClientRect().width;
+    line.style.cssText = 'display:block;';
+    if (textWidth) {
+      const sizeToFill = 100 * (containerWidth / textWidth) * 0.985;
+      if (sizeToFill < widthFontSize) widthFontSize = sizeToFill;
+    }
+  });
+
+  // Cap by available height so 4 lines never overflow
+  const lineHeight = 0.88;
+  const heightCap = containerHeight / (lines.length * lineHeight) * 0.95;
+  const fontSize = Math.floor(Math.min(widthFontSize, heightCap));
+
+  lines.forEach(line => {
+    line.style.cssText = 'display:block; font-size:' + fontSize + 'px';
+  });
+}
+document.fonts.ready.then(fitHeroTitle);
+window.addEventListener('resize', fitHeroTitle);
+
+// ── METR chart two-phase animation ───────────────────────────────
+// Phase 1: draw curve on 0→1hr scale, o1 glows at the top ("wow")
+// Zoom-out: cross-fade to 0→10hr scale (everything flatlines near zero)
+// Phase 2: extension curve draws from o1 up to Opus 4.6 ("oh no")
+function startMETRChart() {
+  var p1    = document.getElementById('metrP1');
+  var p2    = document.getElementById('metrP2');
+  var c1    = document.getElementById('metrCurve1');
+  var c2ext = document.getElementById('metrCurve2ext');
+  var proj  = document.getElementById('metrProj');
+  var lbl2  = document.getElementById('metrLabels2ext');
+  var dotIds = ['metrDotO3','metrDotG5','metrDotG52','metrDotOpus','metrDotOpusInner'];
+  if (!p1 || p1.dataset.started) return;
+  p1.dataset.started = '1';
+
+  // Draw Phase 1 curve left-to-right
+  var l1 = c1.getTotalLength();
+  c1.style.strokeDasharray = l1;
+  c1.style.strokeDashoffset = l1;
+  void c1.getBoundingClientRect();
+  c1.style.transition = 'stroke-dashoffset 2.2s ease-out';
+  c1.style.strokeDashoffset = '0';
+
+  // Zoom out to Phase 2 after Phase 1 finishes
+  setTimeout(function() {
+    p1.style.transition = 'opacity 0.7s ease';
+    p2.style.transition = 'opacity 0.7s ease';
+    p1.style.opacity = '0';
+    p2.style.opacity = '1';
+    // After cross-fade settles, draw extension curve (o1 → Opus 4.6)
+    setTimeout(function() {
+      c2ext.style.transition = 'opacity 0.05s';
+      c2ext.style.opacity = '1';
+      var l2 = c2ext.getTotalLength();
+      c2ext.style.strokeDasharray = l2;
+      c2ext.style.strokeDashoffset = l2;
+      void c2ext.getBoundingClientRect();
+      c2ext.style.transition = 'stroke-dashoffset 2s ease-out';
+      c2ext.style.strokeDashoffset = '0';
+      // Fade in dots, labels, projection as curve reaches them
+      setTimeout(function() {
+        dotIds.forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) { el.style.transition = 'opacity 0.5s'; el.style.opacity = '1'; }
+        });
+        if (lbl2) { lbl2.style.transition = 'opacity 0.5s'; lbl2.style.opacity = '1'; }
+        if (proj) { proj.style.transition = 'opacity 0.5s'; proj.style.opacity  = '0.7'; }
+      }, 1800);
+    }, 750);
+  }, 2900);
+}
+
+// Trigger when slide-3 enters the viewport
+;(function() {
+  var s3 = document.getElementById('slide-3');
+  if (!s3) return;
+  var chartObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        setTimeout(startMETRChart, 900);
+        chartObs.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+  chartObs.observe(s3);
+})();
+</script>
+</body>
+</html>
