@@ -315,7 +315,8 @@ h2.slide-title .dim    { color:var(--text-muted); }
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
 .tl-card.revealed { opacity: 1; transform: translateY(0); }
-[data-reveal].revealed { opacity: 1 !important; }
+[data-reveal] { pointer-events: none; }
+[data-reveal].revealed { opacity: 1 !important; pointer-events: auto; }
 .tl-card.era-1 { --era-clr: #6a5230; }
 .tl-card.era-2 { --era-clr: #9a7035; }
 .tl-card.era-3 { --era-clr: #c08840; }
@@ -470,20 +471,27 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- SLIDE 02 · SPEAKER INTRO — PHOTO                            -->
 <!-- ============================================================ -->
 <section class="slide slide--photo" id="slide-2">
+  <style>
+    #slide-2 .s2-eng { opacity: 0; }
+    #slide-2.visible .s2-eng { animation: s2FadeIn 0.5s ease 2s forwards; }
+    @keyframes s2FadeIn { to { opacity: 1; } }
+  </style>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
-  <div class="slide-inner" style="justify-content:center; align-items:center;">
-    <img src="2026-your-agent-built-it-assets/ran-mic.jpg" alt="Ran Tavory"
-         style="height:min(88vh,88vw); width:min(88vh,88vw); object-fit:cover; border-radius:50%; display:block;">
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- SLIDE 02b · AGENT TIMELINE — static image backup (hidden)   -->
-<section class="slide-backup" id="slide-2b" style="display:none;">
-  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0b0b0b;overflow:hidden;">
-    <img src="2026-your-agent-built-it-assets/agent_timeline.png" alt="Agent timeline"
-         style="max-width:100%;max-height:100%;object-fit:contain;">
+  <div class="slide-inner" style="flex-direction:row; align-items:center; justify-content:center; gap:clamp(3rem,7vw,7rem);">
+    <!-- Photo -->
+    <div style="flex-shrink:0;">
+      <img src="2026-your-agent-built-it-assets/ran-mic.jpg" alt="Ran Tavory"
+           style="height:min(42vh,38vw); width:min(42vh,38vw); object-fit:cover; border-radius:50%; display:block; border:2px solid rgba(192,136,64,0.25);">
+    </div>
+    <!-- Bio -->
+    <div style="display:flex; flex-direction:column; gap:clamp(1.5rem,3.5vh,3rem); min-width:0;">
+      <div style="font-family:var(--font-m); font-size:var(--t-lg); color:var(--amber); letter-spacing:0.04em;">whoami</div>
+      <ul class="bullets large" style="list-style:none;">
+        <li><span class="s2-research">Research</span><span class="s2-eng"> Engineering</span> @ TII</li>
+        <li>LLMs, RAG, Agents</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -494,7 +502,7 @@ h2.slide-title .dim    { color:var(--text-muted); }
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">03 / 26</span>
+      <span class="slide-num">04 / 24</span>
     </div>
     <div class="slide-body" style="justify-content:flex-start;">
       <h2 class="slide-title reveal" style="flex-shrink:0;">Coding agents, by how long a task they can complete.</h2>
@@ -649,34 +657,14 @@ h2.slide-title .dim    { color:var(--text-muted); }
 </section>
 
 <!-- ============================================================ -->
-<!-- SLIDE 04 · AUDIENCE MOMENT                                  -->
-<!-- ============================================================ -->
-<section class="slide-backup slide--content" id="slide-4" style="display:none">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="slide-inner">
-    <div class="slide-top reveal">
-      <span class="tag">Audience</span>
-      <span class="slide-num">04 / 26</span>
-    </div>
-    <div class="slide-body" style="justify-content:center;align-items:flex-start;">
-      <div class="reveal">
-        <p style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:var(--gap-lg);">Show of hands</p>
-        <p class="big-quote" style="max-width:22ch;">How many of you have merged a PR this month that included code an agent wrote — and you didn't read it line by line?</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
 <!-- SLIDE 05 · SECTION 1.3 — YOU DIDN'T BUILD IT               -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-5" data-steps="1" data-step="0">
+<section class="slide slide--content" id="slide-4" data-steps="1" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">05 / 26</span>
+      <span class="slide-num">05 / 24</span>
     </div>
     <div class="slide-body" style="gap:var(--gap);">
       <div class="two-col" style="flex:1;align-items:center;">
@@ -688,8 +676,8 @@ h2.slide-title .dim    { color:var(--text-muted); }
         <div style="display:flex;flex-direction:column;justify-content:center;gap:var(--gap-lg);">
           <p class="reveal" style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);letter-spacing:0.15em;text-transform:uppercase;">Werner Vogels · Amazon · 2006</p>
           <style>
-            #slide-5 .s5-bullets { transition: opacity 0.5s ease; }
-            #slide-5[data-step="1"] .s5-bullets { opacity: 0 !important; pointer-events: none; }
+            #slide-4 .s5-bullets { transition: opacity 0.5s ease; }
+            #slide-4[data-step="1"] .s5-bullets { opacity: 0 !important; pointer-events: none; }
           </style>
           <ul class="bullets s5-bullets" style="transition:opacity 0.5s ease;">
             <li>Ownership and quality</li>
@@ -710,11 +698,11 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 06 · SECTION 2 — THREE FORemote Code ExecutionS OVERVIEW               -->
 <!-- ============================================================ -->
-<section class="slide slide--section" id="slide-6">
+<section class="slide slide--section" id="slide-5">
   <div class="section-bg-num">2</div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">06 / 26</span>
+      <span class="slide-num">06 / 24</span>
     </div>
     <div class="slide-body" style="align-items:center;">
       <div style="display:inline-block;text-align:left;">
@@ -724,7 +712,7 @@ h2.slide-title .dim    { color:var(--text-muted); }
           <li style="padding-left:0;"><strong>Force 2 — Breadth</strong></li>
           <li style="padding-left:0;"><strong>Force 3 — Lost intimacy</strong></li>
         </ul>
-        <style>#slide-6 .bullets li::before { display:none; }</style>
+        <style>#slide-5 .bullets li::before { display:none; }</style>
       </div>
     </div>
   </div>
@@ -733,13 +721,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 07 · FORemote Code Execution 1 — VOLUME                                 -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-7" data-steps="1" data-step="0">
+<section class="slide slide--content" id="slide-6" data-steps="1" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Force 1 — Volume</span>
-      <span class="slide-num">07 / 26</span>
+      <span class="slide-num">07 / 24</span>
     </div>
     <div class="slide-body" style="gap:var(--gap);">
       <h2 class="slide-title reveal" >More code. More surface area for failure.</h2>
@@ -776,13 +764,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 08 · FORemote Code Execution 2 — BREADTH                                -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-8" data-steps="2" data-step="0">
+<section class="slide slide--content" id="slide-7" data-steps="2" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Force 2 — Breadth</span>
-      <span class="slide-num">08 / 26</span>
+      <span class="slide-num">08 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal">The definition of "developer" <span class="accent">expanded.</span></h2>
@@ -801,7 +789,7 @@ h2.slide-title .dim    { color:var(--text-muted); }
 
     <!-- OVERLAY: developer definition reframe -->
     <style>
-      #slide-8[data-step="2"] .s8-q { text-decoration:line-through; text-decoration-color:#666; color:#555; transition:color 0.4s, text-decoration 0.4s; }
+      #slide-7[data-step="2"] .s8-q { text-decoration:line-through; text-decoration-color:#666; color:#555; transition:color 0.4s, text-decoration 0.4s; }
     </style>
     <div data-reveal="1" style="position:absolute;inset:0;background:rgba(5,5,5,0.98);z-index:10;display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.6s ease;">
       <div style="text-align:center;max-width:min(85vw,900px);display:flex;flex-direction:column;gap:clamp(1rem,3vh,2.5rem);">
@@ -816,13 +804,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 09 · BREADTH — MCP SECURITY ANGLE                    -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-9" data-steps="1" data-step="0">
+<section class="slide slide--content" id="slide-8" data-steps="1" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Force 2 — Breadth: Security</span>
-      <span class="slide-num">09 / 26</span>
+      <span class="slide-num">09 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal">When non-specialists ship code, <span class="accent">attack surface</span> grows.</h2>
@@ -848,13 +836,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 10 · FORemote Code Execution 3 — LOST INTIMACY                         -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-10" data-steps="3" data-step="0">
+<section class="slide slide--content" id="slide-9" data-steps="2" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Force 3 — Lost Intimacy</span>
-      <span class="slide-num">10 / 26</span>
+      <span class="slide-num">10 / 24</span>
     </div>
     <div class="slide-body" style="gap:var(--gap);">
       <h2 class="slide-title reveal" >The hunch is gone.</h2>
@@ -927,15 +915,7 @@ h2.slide-title .dim    { color:var(--text-muted); }
       </div>
     </div>
   </div>
-  <!-- Quote overlay: click 2 -->
-  <div data-reveal="2" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.8s ease;z-index:10;">
-    <div style="border-left:3px solid var(--amber);padding-left:clamp(1.2rem,3vw,2.5rem);max-width:min(80vw,860px);">
-      <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.6;font-style:italic;margin:0;">"When code breaks, you are not reconstructing intent. You are reverse-engineering a decision process that was never explained and no longer exists."</p>
-      <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--text-faint);margin-top:clamp(0.8rem,2vh,1.5rem);">— David Monnerat</p>
-    </div>
-  </div>
-
-  <div data-reveal="3" style="position:absolute;inset:0;background:rgba(5,5,5,0.97);display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.7s ease;z-index:11;">
+  <div data-reveal="2" style="position:absolute;inset:0;background:rgba(5,5,5,0.97);display:flex;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.7s ease;z-index:11;">
     <p style="font-family:var(--font-h);font-size:var(--t-xl);color:var(--text-dim);text-align:center;line-height:1.4;max-width:min(85vw,900px);">The codebase is accumulating decisions<br>that <span style="color:var(--amber);">nobody made.</span></p>
   </div>
 </section>
@@ -943,13 +923,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 12 · DON'T FIGHT IT — TRANSITION                     -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-12" data-steps="1" data-step="0">
+<section class="slide slide--content" id="slide-10" data-steps="1" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">The Pivot</span>
-      <span class="slide-num">12 / 26</span>
+      <span class="slide-num">11 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="font-size:var(--t-xl);max-width:100%;">You can fight bad outputs. You can't fight <span class="accent">the volume curve.</span></h2>
@@ -969,18 +949,17 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 13 · SECTION 3 — MANAGING WITHOUT READING            -->
 <!-- ============================================================ -->
-<section class="slide slide--section" id="slide-13" data-steps="2" data-step="0">
+<section class="slide slide--section" id="slide-11" data-steps="2" data-step="0">
   <div class="section-bg-num">3</div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">13 / 26</span>
+      <span class="slide-num">12 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" >Managing without reading.</h2>
       <ul class="bullets large reveal">
         <li>You've managed code you didn't write before — every tech lead has</li>
         <li><em>Trust, but verify</em> → <strong>Trust, but make it prove it</strong></li>
-        <li>Your job: defining what good behaviour looks like, detecting deviation</li>
       </ul>
     </div>
   </div>
@@ -988,7 +967,7 @@ h2.slide-title .dim    { color:var(--text-muted); }
   <div data-reveal="1" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1.5rem,4vh,3.5rem);padding:var(--gap-lg);">
     <p style="font-family:var(--font-m);font-size:var(--t-sm);color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;margin:0;">Your job</p>
     <div style="display:flex;flex-direction:column;gap:clamp(1.2rem,3vh,2.5rem);text-align:center;">
-      <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">1. Define what good behaviour looks like</p>
+      <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">1. Define goal</p>
       <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">2. Detect deviation</p>
     </div>
   </div>
@@ -1005,12 +984,12 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 14 · THE VERBS CHANGE OBJECT — TABLE                  -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-14" data-steps="6" data-step="0">
+<section class="slide slide--content" id="slide-12" data-steps="6" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">14 / 26</span>
+      <span class="slide-num">13 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">You've done this before. The verbs just <span class="accent">change object.</span></h2>
@@ -1032,20 +1011,21 @@ h2.slide-title .dim    { color:var(--text-muted); }
   </div>
   <!-- OVERLAY: click 6 -->
   <div data-reveal="6" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.97);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1.5rem,4vh,3rem);padding:var(--gap-lg);text-align:center;">
-    <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-primary);margin:0;">Stop reviewing <em style="color:var(--text-dim);font-style:italic;">code.</em></p>
-    <p style="font-size:var(--t-xl);font-weight:700;color:var(--amber);margin:0;">Start reviewing observable <em style="font-style:italic;">behavior.</em></p>
+    <p style="font-size:var(--t-xl);font-weight:700;color:var(--text-dim);margin:0;">Review <em style="font-style:italic;">code.</em></p>
+    <p style="font-size:var(--t-xl);font-weight:700;color:var(--amber);margin:0;">↓</p>
+    <p style="font-size:var(--t-xl);font-weight:700;color:var(--text);margin:0;">Review observable <em style="font-style:italic;">behavior.</em></p>
   </div>
 </section>
 
 <!-- ============================================================ -->
 <!-- SLIDE 15 · MAKE IT PROVE IT — WORKED EXAMPLE                -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-15" data-steps="1" data-step="0">
+<section class="slide slide--content" id="slide-13" data-steps="1" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">15 / 26</span>
+      <span class="slide-num">14 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">Scenario: agent ships a payment feature.</h2>
@@ -1055,12 +1035,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
           <div class="code-block" style="font-size:var(--t-body-lg);line-height:2;">
             <span class="ok">✅</span> tests pass (47/47)<br>
             <span class="ok">✅</span> no lint errors<br>
-            <span class="ok">✅</span> coverage 89%<br>
-            <span class="ok">✅</span> ready to merge
+            <span class="ok">✅</span> coverage 98%<br>
+            <span class="ok">✅</span> ready to merge<br>
+            <span class="ok">✅</span> code review
           </div>
         </div>
         <div data-reveal="1" class="panel panel--vivid" style="opacity:0;transition:opacity 0.6s ease;">
-          <p class="panel-label" style="color:var(--amber);font-size:var(--t-sm);">What you demand instead</p>
+          <p class="panel-label" style="color:var(--amber);font-size:var(--t-sm);">What you demand additionally</p>
           <div class="code-block" style="font-size:var(--t-body-lg);line-height:2;color:#aaa;">
             <span class="demand">→</span> Add metrics: <span class="demand">payment.retry.attempts</span>, <span class="demand">payment.retry.exhausted</span><br>
             <span class="demand">→</span> Run synthetic failure in staging<br>
@@ -1074,65 +1055,20 @@ h2.slide-title .dim    { color:var(--text-muted); }
 </section>
 
 <!-- ============================================================ -->
-<!-- SLIDE 16 · CAVEAT — A WORD ON CODE REVIEW                  -->
-<!-- ============================================================ -->
-<section class="slide-backup slide--content" id="slide-16" style="display:none">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="slide-inner">
-    <div class="slide-top reveal">
-      <span class="slide-num">16 / 26</span>
-    </div>
-    <div class="slide-body">
-      <h2 class="slide-title reveal">A word on code review.</h2>
-      <ul class="bullets large reveal" style="margin-top:var(--gap-lg);">
-        <li><strong>First-pass author accountability:</strong> you wrote it with an agent — inspect it before it leaves your hands</li>
-        <li><strong>Production confidence:</strong> don't rely on code familiarity — rely on behaviour in production</li>
-        <li><strong>Reviewer role:</strong> inspect contracts and blast radius, not every line</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- SLIDE 17 · DEFINING GOOD BEHAVIOUR — SLO EXAMPLE           -->
-<!-- ============================================================ -->
-<section class="slide slide--content" id="slide-17">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="slide-inner">
-    <div class="slide-top reveal">
-      <span class="slide-num">17 / 26</span>
-    </div>
-    <div class="slide-body">
-      <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">Scenario: auth endpoint.</h2>
-      <div class="code-block reveal" style="font-size:var(--t-body-lg);line-height:2;color:var(--text-dim);border:1px solid var(--amber-dim);background:var(--amber-faint);padding:clamp(1rem,2vh,2rem);">
-        <span class="good">p99 latency &lt; 300ms under expected load</span><br>
-        <span class="good">error rate &lt; 0.1%, no single type &gt; 50% of failures</span><br>
-        <span class="good">token refresh success rate &gt; 99.5%</span><br>
-        <span class="good">≤ 5 failed logins per IP/min before rate-limit kicks in</span><br>
-        <span class="good">100% of auth events emit structured log: user-id + outcome</span>
-      </div>
-      <p class="reveal" style="font-size:var(--t-body);color:var(--text-muted);margin-top:var(--gap);font-style:italic;">These rules aren't in the code. They're in the contract. Enforced via observability, not line-by-line review.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
 <!-- SLIDE 18 · SECTION 4 — FIVE SHIFTS OVERVIEW                -->
 <!-- ============================================================ -->
-<section class="slide slide--section" id="slide-18" data-steps="1" data-step="0">
+<section class="slide slide--section" id="slide-14" data-steps="1" data-step="0">
   <div class="section-bg-num">4</div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">18 / 26</span>
+      <span class="slide-num">15 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">Four shifts.</h2>
       <style>
-        #slide-18 .bullets li::before { display:none; }
-        #slide-18 .s18-ann { opacity:0; transition:opacity 0.5s ease; color:var(--amber); font-size:var(--t-body); font-style:italic; margin-left:clamp(0.75rem,2vw,1.5rem); }
-        #slide-18[data-step="1"] .s18-ann { opacity:1; }
+        #slide-14 .bullets li::before { display:none; }
+        #slide-14 .s18-ann { opacity:0; transition:opacity 0.5s ease; color:var(--amber); font-size:var(--t-body); font-style:italic; margin-left:clamp(0.75rem,2vw,1.5rem); }
+        #slide-14[data-step="1"] .s18-ann { opacity:1; }
       </style>
       <ol class="bullets large reveal" style="list-style:decimal inside;padding-left:0;">
         <li>Observability-first deployment<span class="s18-ann">← the test</span></li>
@@ -1147,13 +1083,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 19 · SHIFT 1 — OBSERVABILITY-FIRST                   -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-19" data-steps="2" data-step="0">
+<section class="slide slide--content" id="slide-15" data-steps="2" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Shift 1 of 4</span>
-      <span class="slide-num">19 / 26</span>
+      <span class="slide-num">16 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal">Observability-first.</h2>
@@ -1176,7 +1112,14 @@ h2.slide-title .dim    { color:var(--text-muted); }
   <!-- Definition modal: click 2 -->
   <div data-reveal="2" style="position:absolute;inset:0;background:rgba(11,11,11,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,6rem);opacity:0;transition:opacity 0.8s ease;z-index:10;">
     <div style="border-left:3px solid var(--amber);padding-left:clamp(1.2rem,3vw,2.5rem);max-width:min(80vw,860px);">
-      <p style="font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.7;font-style:italic;margin:0;">Code is agent-observable if a person (or an agent) can reason about its behaviour without reading the source. That means structured logs with semantic event names, metrics with documented units and labels, traces with attributes that explain intent.</p>
+      <p style="font-size:var(--t-body-lg);color:var(--amber);line-height:1.7;margin:0 0 clamp(0.8rem,2vh,1.4rem);">Agent-observable code:</p>
+      <ul style="list-style:none;margin:0;padding:0;font-size:var(--t-body-lg);color:var(--text-dim);line-height:2;">
+        <li style="margin-bottom:0.2em;">— Reason without reading the source.</li>
+        <li style="margin-bottom:0.2em;">— Structured logs</li>
+        <li style="margin-bottom:0.2em;">— Semantic event names</li>
+        <li style="margin-bottom:0.2em;">— Metrics with documented units and labels</li>
+        <li>— Traces with attributes that explain intent</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -1184,13 +1127,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 20 · SHIFT 2 — SLOs AS THE CONTRACT                  -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-20" data-steps="2" data-step="0">
+<section class="slide slide--content" id="slide-16" data-steps="2" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Shift 2 of 4</span>
-      <span class="slide-num">20 / 26</span>
+      <span class="slide-num">17 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="white-space:nowrap;">SLOs as the contract.</h2>
@@ -1221,13 +1164,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 21 · SHIFT 3 — POLICY-AS-CODE                        -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-21" data-steps="1" data-step="0">
+<section class="slide slide--content" id="slide-17" data-steps="1" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Shift 3 of 4</span>
-      <span class="slide-num">21 / 26</span>
+      <span class="slide-num">18 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="white-space:nowrap;">Policy-as-code guardrails.</h2>
@@ -1250,23 +1193,23 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 22 · SHIFT 4 — INVESTIGATION REPORTS                 -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-22" data-steps="3" data-step="0">
+<section class="slide slide--content" id="slide-18" data-steps="3" data-step="0">
   <style>
-    #slide-22 .s22-rhs { opacity:0; transition:opacity 0.5s ease; }
-    #slide-22[data-step="1"] .s22-rhs,
-    #slide-22[data-step="2"] .s22-rhs,
-    #slide-22[data-step="3"] .s22-rhs { opacity:1; }
-    #slide-22 .s22-lhs { transition:opacity 0.5s ease; }
-    #slide-22[data-step="1"] .s22-lhs,
-    #slide-22[data-step="2"] .s22-lhs,
-    #slide-22[data-step="3"] .s22-lhs { opacity:0.25; }
+    #slide-18 .s22-rhs { opacity:0; transition:opacity 0.5s ease; }
+    #slide-18[data-step="1"] .s22-rhs,
+    #slide-18[data-step="2"] .s22-rhs,
+    #slide-18[data-step="3"] .s22-rhs { opacity:1; }
+    #slide-18 .s22-lhs { transition:opacity 0.5s ease; }
+    #slide-18[data-step="1"] .s22-lhs,
+    #slide-18[data-step="2"] .s22-lhs,
+    #slide-18[data-step="3"] .s22-lhs { opacity:0.25; }
   </style>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Shift 4 of 4</span>
-      <span class="slide-num">22 / 26</span>
+      <span class="slide-num">19 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="margin-bottom:var(--gap);">Start from the investigation report.</h2>
@@ -1312,7 +1255,7 @@ h2.slide-title .dim    { color:var(--text-muted); }
     <div data-reveal="2" style="opacity:0;transition:opacity 0.5s ease;position:absolute;inset:0;background:rgba(5,5,5,0.6);z-index:10;display:flex;align-items:center;justify-content:flex-start;padding-left:clamp(2rem,8vw,8rem);">
       <div style="display:flex;align-items:center;gap:clamp(1rem,2vw,2rem);">
         <div style="display:flex;flex-direction:column;gap:0.5rem;text-align:right;">
-          <p style="font-size:var(--t-xl);font-weight:800;color:var(--amber);margin:0;line-height:1.2;">Use your AI<br>bullshit meter</p>
+          <p style="font-size:var(--t-xl);font-weight:800;color:var(--amber);margin:0;line-height:1.2;">Use your AI<br>bullshit filter</p>
         </div>
         <span style="font-size:clamp(3rem,8vw,7rem);color:var(--amber);line-height:1;">⟶</span>
       </div>
@@ -1324,11 +1267,11 @@ h2.slide-title .dim    { color:var(--text-muted); }
         <ol style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:clamp(0.75rem,2vh,1.5rem);">
           <li style="display:flex;gap:1rem;align-items:baseline;">
             <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;">1.</span>
-            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Is <em style="color:var(--amber);font-style:italic;">my</em> instrumentation right?</span>
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Is instrumentation right?</span>
           </li>
           <li style="display:flex;gap:1rem;align-items:baseline;">
             <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;">2.</span>
-            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Is <em style="color:var(--amber);font-style:italic;">my</em> analysis right?</span>
+            <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--text-dim);line-height:1.4;">Is agent analysis correct?</span>
           </li>
           <li style="display:flex;gap:1rem;align-items:baseline;">
             <span style="font-family:var(--font-m);font-size:var(--t-body-lg);color:var(--amber);min-width:2rem;">3.</span>
@@ -1344,31 +1287,31 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 23 · SHIFT 5 — THE NEW ON-CALL SKILL                 -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-23" data-steps="4" data-step="0">
+<section class="slide slide--content" id="slide-19" data-steps="4" data-step="0">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Shift 5 of 4</span>
-      <span class="slide-num">23 / 26</span>
+      <span class="slide-num">20 / 24</span>
     </div>
     <style>
       /* ✕ and annotations start hidden; strikethrough starts off */
-      #slide-23 .s23-x1, #slide-23 .s23-ann1,
-      #slide-23 .s23-x2, #slide-23 .s23-ann2,
-      #slide-23 .s23-x3, #slide-23 .s23-ann3 { opacity:0; transition:opacity 0.4s ease; }
+      #slide-19 .s23-x1, #slide-19 .s23-ann1,
+      #slide-19 .s23-x2, #slide-19 .s23-ann2,
+      #slide-19 .s23-x3, #slide-19 .s23-ann3 { opacity:0; transition:opacity 0.4s ease; }
       /* Step 1+: reveal row 1 */
-      #slide-23:not([data-step="0"]) .s23-x1,
-      #slide-23:not([data-step="0"]) .s23-ann1 { opacity:1; }
-      #slide-23:not([data-step="0"]) .s23-r1 { text-decoration:line-through; text-decoration-color:#e8573a99; }
+      #slide-19:not([data-step="0"]) .s23-x1,
+      #slide-19:not([data-step="0"]) .s23-ann1 { opacity:1; }
+      #slide-19:not([data-step="0"]) .s23-r1 { text-decoration:line-through; text-decoration-color:#e8573a99; }
       /* Step 2+: reveal row 2 */
-      #slide-23:not([data-step="0"]):not([data-step="1"]) .s23-x2,
-      #slide-23:not([data-step="0"]):not([data-step="1"]) .s23-ann2 { opacity:1; }
-      #slide-23:not([data-step="0"]):not([data-step="1"]) .s23-r2 { text-decoration:line-through; text-decoration-color:#e8573a99; }
+      #slide-19:not([data-step="0"]):not([data-step="1"]) .s23-x2,
+      #slide-19:not([data-step="0"]):not([data-step="1"]) .s23-ann2 { opacity:1; }
+      #slide-19:not([data-step="0"]):not([data-step="1"]) .s23-r2 { text-decoration:line-through; text-decoration-color:#e8573a99; }
       /* Step 3+: reveal row 3 */
-      #slide-23[data-step="3"] .s23-x3, #slide-23[data-step="4"] .s23-x3,
-      #slide-23[data-step="3"] .s23-ann3, #slide-23[data-step="4"] .s23-ann3 { opacity:1; }
-      #slide-23[data-step="3"] .s23-r3, #slide-23[data-step="4"] .s23-r3 { text-decoration:line-through; text-decoration-color:#e8573a99; }
+      #slide-19[data-step="3"] .s23-x3, #slide-19[data-step="4"] .s23-x3,
+      #slide-19[data-step="3"] .s23-ann3, #slide-19[data-step="4"] .s23-ann3 { opacity:1; }
+      #slide-19[data-step="3"] .s23-r3, #slide-19[data-step="4"] .s23-r3 { text-decoration:line-through; text-decoration-color:#e8573a99; }
     </style>
     <div class="slide-body">
       <h2 class="slide-title reveal">The new on-call skill.</h2>
@@ -1427,11 +1370,11 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 24 · SECTION 5 — CLOSE / REFRAME                     -->
 <!-- ============================================================ -->
-<section class="slide slide--section" id="slide-24">
+<section class="slide slide--section" id="slide-20">
   <div class="section-bg-num">5</div>
   <div class="slide-inner">
     <div class="slide-top reveal">
-      <span class="slide-num">24 / 26</span>
+      <span class="slide-num">21 / 24</span>
     </div>
     <div class="slide-body" style="justify-content:center;text-align:center;">
       <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">The reframe.</h2>
@@ -1451,13 +1394,13 @@ h2.slide-title .dim    { color:var(--text-muted); }
 <!-- ============================================================ -->
 <!-- SLIDE 25 · CALL TO ACTION — THREE QUESTIONS                 -->
 <!-- ============================================================ -->
-<section class="slide slide--content" id="slide-25">
+<section class="slide slide--content" id="slide-21">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="slide-inner">
     <div class="slide-top reveal">
       <span class="tag">Call to Action</span>
-      <span class="slide-num">25 / 26</span>
+      <span class="slide-num">22 / 24</span>
     </div>
     <div class="slide-body">
       <h2 class="slide-title reveal" style="margin-bottom:var(--gap-lg);">Three questions before every agent-written deploy.</h2>
@@ -1490,16 +1433,37 @@ h2.slide-title .dim    { color:var(--text-muted); }
 </section>
 
 <!-- ============================================================ -->
+<!-- SLIDE 26 · BONUS — WHEN AI BUILDS ITSELF                    -->
+<!-- ============================================================ -->
+<section class="slide-backup slide--content" id="slide-22" style="display:none">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="slide-top reveal">
+      <span class="tag">Bonus</span>
+      <span class="slide-num">23 / 24</span>
+    </div>
+    <div class="slide-body" style="align-items:center; gap:var(--gap-lg);">
+      <h2 class="slide-title reveal" style="text-align:center;">When <span class="accent">AI</span> Builds Itself</h2>
+      <div class="reveal" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden;width:100%;">
+        <img src="2026-your-agent-built-it-assets/ai_builds_itself.png" alt="When AI Builds Itself — Anthropic"
+             style="max-width:100%;max-height:min(58vh,700px);object-fit:contain;border-radius:6px;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
 <!-- SLIDE 26 · CLOSING LINE                                     -->
 <!-- ============================================================ -->
-<section class="slide slide--closing" id="slide-26" data-steps="1" data-step="0">
+<section class="slide slide--closing" id="slide-23" data-steps="1" data-step="0">
   <div class="orb orb-1" style="opacity:0.25;"></div>
   <div class="orb orb-2" style="opacity:0.2;"></div>
   <div class="slide-inner" style="justify-content:center;align-items:center;text-align:center;">
     <div class="reveal">
       <p style="font-family:var(--font-m);font-size:var(--t-mono);color:var(--amber);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:var(--gap-lg);">AWS X DevOps · 2026</p>
       <p class="closing-line">
-        Your job isn't writing/reading code.
+        Your job isn't writing/reading code.<br>
         It's writing/reading <span class="accent">systems.</span>
       </p>
     </div>
@@ -1535,7 +1499,7 @@ const NOTES = {
 </ul>
 <p><strong>Close:</strong> Hold the moment. <em>"That's my story. Let me show you the curve underneath it."</em> → straight into the AI Digest chart.</p>`,
 
-  2: `<p>I want to start with a personal story.</p>`,
+  2: `<p><strong>whoami slide.</strong> Let it breathe. "Engineering" fades in after 2 seconds — the title update is the point: the scope changed, and that's the personal thread of the talk.</p>`,
 
   3: `<ul>
 <li><strong>Frame METR carefully:</strong> Task-completion time horizons have grown exponentially since 2019, with no sign of slowing. As of early 2026, frontier models reliably handle tasks that take a human expert several hours. Extrapolating the curve, multi-day tasks are plausibly within reach by 2027.</li>
@@ -1599,7 +1563,7 @@ const NOTES = {
   9: `<p><strong>[Slide in — left panel only]</strong> <em>"That hunch — 'the bug is probably in the auth middleware I touched Tuesday' — doesn't exist for code you never wrote."</em> Debugging isn't reading code, it's reverse-engineering <em>why</em> a piece of code looked the way it did. You can only do that if you know the decisions that produced it.</p>
 <p><strong>61%:</strong> Duma et al., EASE '26, n=33,596 AI PRs vs 5,574 human PRs, peer-reviewed. <em>"In two years your job won't be reading code. The data says it already isn't — 61% of agent-authored PRs aren't getting read today."</em></p>
 <p><strong>[Click 1 — right panel appears]</strong> Walk through the contrast. Same alert, same codebase — but on the right, you've never read a single node. No hunch. Starts from zero.</p>
-<p><strong>[Click 2 — Monnerat quote overlay]</strong> Let it sit. Don't read it aloud immediately — give the room a beat to take it in. Then: <em>"The codebase is accumulating decisions that nobody made."</em></p>
+<p><strong>[Click 2 — full-screen overlay]</strong> <em>"The codebase is accumulating decisions that nobody made."</em> Let it land. Don't rush the next slide.</p>
 `,
 
 
@@ -1641,12 +1605,7 @@ const NOTES = {
 <p>Walk both panels. Left: what you're trained to accept. Right: what you should demand. The contrast is the whole lesson.</p>
 <p>Your experience is what tells you what evidence to demand. That's the skill that scales.</p>`,
 
-
-  14: `<p><strong>Open:</strong> This is the concrete version of what defining good behaviour looks like.</p>
-<p>Key point: these rules aren't in the code. They're in the contract. You're enforcing them via observability, not review.</p>
-<p>Before the agent writes a line — this is the specification. The agent's job is to satisfy it. Your job is to verify it does.</p>`,
-
-  15: `<p>The toolkit for "managing without reading" exists. You now have to automate it, make it robust, and tune it to an agent.</p>
+  14: `<p>The toolkit for "managing without reading" exists. You now have to automate it, make it robust, and tune it to an agent.</p>
 <ul>
 <li><strong>Observability-first deployment</strong> — instrumentation is required; the basic "unit test for production." Instrument before you ship, have the agent prove it's working.</li>
 <li><strong>SLOs as the production contract</strong> — the non-functional requirements. Observable behaviour, not code review, is the contract.</li>
@@ -1655,7 +1614,7 @@ const NOTES = {
 </ul>
 <p>Four shifts. They compound. Walk the list — each one is a slide that follows.</p>`,
 
-  16: `<p><strong>Open:</strong> It's the precondition for everything else.</p>
+  15: `<p><strong>Open:</strong> It's the precondition for everything else.</p>
 <p><strong>Per bullet:</strong></p>
 <ul>
 <li><em>"Instrument before you ship"</em> — observability is no longer something you add when there's a problem. It's the deploy gate, the unit-test of production. If the code doesn't emit signals you can reason about in production, it isn't done.</li>
@@ -1665,7 +1624,7 @@ const NOTES = {
 <p><strong>Push back:</strong> Instrumentation has a cost — schema design, label cardinality, storage. The cost is real. The point isn't <em>more</em> signals; it's the <em>right</em> signals. A handful of well-named structured events beats a flood of <code>info "starting"</code> log lines.</p>
 <p><strong>Close:</strong> The system can now be reasoned about from outside. What's the contract for whether it's <em>working</em>? That's Shift 2 — SLOs.</p>`,
 
-  17: `<p><strong>Open:</strong> Shift 1 made the system legible. Shift 2 makes "is it working?" measurable. The SLO is the contract.</p>
+  16: `<p><strong>Open:</strong> Shift 1 made the system legible. Shift 2 makes "is it working?" measurable. The SLO is the contract.</p>
 <p><strong>Per bullet:</strong></p>
 <ul>
 <li><em>"The SLO defines what 'working' means — it's how the agent verifies its own work"</em> — tie back to Section 3: agents need a goal and a way to verify their work. The SLO is both. "Working" stops being a vibe and starts being a measurable contract.</li>
@@ -1676,7 +1635,7 @@ const NOTES = {
 <p><strong>Push back:</strong> Voice this on stage — credibility move. SLOs are <em>necessary but not sufficient</em>. They tell you when something is wrong in production, but they don't catch problems before deploy. Honest framing: <em>"SLO + automated quality gates = the new code review."</em> Not "SLO replaces code review."</p>
 <p><strong>Close:</strong> SLOs are the contract. But who enforces the contract at deploy time, when the agent's the one shipping? Shift 3 — policy-as-code.</p>`,
 
-  18: `<p><strong>Open:</strong> SLO sets the contract; policy-as-code enforces it at the gate. The agent ships through the same gate as a human — neither party gets to bypass it.</p>
+  17: `<p><strong>Open:</strong> SLO sets the contract; policy-as-code enforces it at the gate. The agent ships through the same gate as a human — neither party gets to bypass it.</p>
 <p><strong>Per bullet:</strong></p>
 <ul>
 <li><em>"Policy-as-code: the deploy gate is code, version-controlled, enforced by CI"</em> — The point isn't a specific tool. It's that the gate is code, version-controlled, code-reviewed itself, and not negotiable in the moment. The canonical tool is <strong>OPA (Open Policy Agent)</strong> with <strong>Rego</strong> — a CNCF graduated project used at Netflix, Goldman Sachs, Google Cloud. Adjacent: Conftest, Checkov, Spacelift. The point of the slide is the pattern, not the product.</li>
@@ -1685,7 +1644,7 @@ const NOTES = {
 <p><strong>Push back:</strong> Two honest caveats. (1) Writing good policy is a real skill — the failure mode is policies that block legitimate work or silently pass everything. Maintain them like code, with tests. (2) Emerging "Policy-as-Prompt" work — tooling exists (NeMo Guardrails, Guardrails AI) but ecosystem is early.</p>
 <p><strong>Close:</strong> Deploy gate enforces the contract pre-prod. But what about production itself, when something does go wrong at 2 AM? That's Shift 4.</p>`,
 
-  19: `<p><strong>Open:</strong> Shifts 1–3 are about the system before the incident. Shift 4 is the moment everyone in this room cares about: the page fires at 3 AM — what happens next?</p>
+  18: `<p><strong>Open:</strong> Shifts 1–3 are about the system before the incident. Shift 4 is the moment everyone in this room cares about: the page fires at 3 AM — what happens next?</p>
 <p><strong>Stage order:</strong></p>
 <ol>
 <li><strong>Old world — tail logs.</strong> <em>"3 AM, alert fires: checkout p99 latency > 2s. Old world: SSH in, tail logs, grep for the deploy, look at the diff, find the bad query."</em> Let that land — it's what everyone in this room has done.</li>
@@ -1695,7 +1654,7 @@ const NOTES = {
 </ol>
 <p><strong>Push back:</strong> Vendor numbers (incident.io's 80% root-cause precision, Rootly's 70% MTTR reduction) are self-reported — say so. Confidence scores are noisy — treat them as input, not verdict.</p>`,
 
-  20: `<p><strong>Open:</strong> Final shift. We've talked about the system; this one is about <em>you</em> — what gets harder, what gets easier, what to be good at.</p>
+  19: `<p><strong>Open:</strong> Final shift. We've talked about the system; this one is about <em>you</em> — what gets harder, what gets easier, what to be good at.</p>
 <p><strong>Per bullet:</strong></p>
 <ul>
 <li><em>"Old: read the code, find the bug"</em> — the on-call skill that defined the last 20 years of SRE. Effective, but it required intimacy with the codebase — exactly what Force 3 said we're losing.</li>
@@ -1705,11 +1664,11 @@ const NOTES = {
 <p><strong>Push back:</strong> Be honest about what's lost. Deep code intimacy was <em>fun</em>; it made you feel competent in a tangible way. The new skill is more abstract, less satisfying, and harder to teach juniors. Don't pretend the transition is costless. But it's the only skill that scales to the volumes of today.</p>
 <p><strong>Close:</strong> Five shifts. They compound. Section 5 — the close — reframes the whole job in one line.</p>`,
 
-  21: `<p><strong>Open:</strong> No transition needed. Let the reframe land.</p>
+  20: `<p><strong>Open:</strong> No transition needed. Let the reframe land.</p>
 <p>"You build it, you run it" was about accountability, not keystrokes. The accountability hasn't moved. The keystrokes have.</p>
 <p>Your job didn't disappear. It got harder, more interesting, and more leveraged.</p>`,
 
-  22: `<p><strong>Open:</strong> Three questions. One per deploy. No exceptions.</p>
+  21: `<p><strong>Open:</strong> Three questions. One per deploy. No exceptions.</p>
 <p>Let the audience write these down if they're going to write anything. These are the only three things you need to walk out with.</p>
 <p><strong>Per bullet:</strong></p>
 <ul>
@@ -1718,6 +1677,9 @@ const NOTES = {
 <li><em>"Who bears the responsibility?"</em> — Think of it like an autonomous car. Are you, as the passive driver sitting behind the wheel, responsible for its behaviour? In today's software: yes, you are. Someone's name has to be on the SLO. Someone gets paged. Someone owns the postmortem. That has to be decided before the deploy, not after the incident.</li>
 </ul>
 <p><em>"If you can't answer those three, you're not ready to ship — regardless of who wrote the code."</em></p>`,
+
+  22: `<p><strong>Bonus slide — use if time permits.</strong> This image is from an Anthropic article published last week (June 2026): AI is measurably getting better at building itself. Claude is now contributing meaningfully to its own codebase.</p>
+<p>The meta-point: the agents we're building systems to run are themselves being built by agents. The loop closes. The question this talk asked — "who the 🤬 runs it?" — applies recursively. That's not a punchline. That's the next chapter.</p>`,
 
   23: `<p><strong>Final slide.</strong> Let it sit. Don't rush the outro.</p>
 <p><em>"Your job isn't writing/reading code. It's writing/reading systems."</em></p>
